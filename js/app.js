@@ -27,6 +27,8 @@ const savedCosmos = readPref('hai.cosmos');
 const initialCosmos = savedCosmos === null ? true : savedCosmos === '1';  // default on
 const savedChallenges = readPref('hai.challenges');
 const initialChallenges = savedChallenges === null ? true : savedChallenges === '1';  // default on
+const savedWide = readPref('hai.wide');
+const initialWide = savedWide === '1';  // default off (fit to the standard column)
 
 let sky = null;  // starfield controller, created at boot
 
@@ -304,6 +306,7 @@ function boot() {
   setValue('depthOv', true);   // newcomers read the overview by default
   setValue('depthIn', false);  // specialists opt into the in-depth layer
   setValue('challengesOn', initialChallenges);
+  setValue('wide', initialWide);  // expanded (~80vw) vs. standard-width slide
   setValue('nodes', []);
   setValue('eras', []);
 
@@ -352,6 +355,11 @@ function boot() {
     const next = !appState.challengesOn;
     setValue('challengesOn', next);
     writePref('hai.challenges', next ? '1' : '0');
+  });
+  defineFn('toggleWide', () => {
+    const next = !appState.wide;
+    setValue('wide', next);
+    writePref('hai.wide', next ? '1' : '0');
   });
   // Toggle between the slide view and the era-overview map.
   defineFn('toggleScreen', () => {

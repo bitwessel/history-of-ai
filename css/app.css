@@ -68,7 +68,18 @@ code {
 .btn--chip .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); }
 
 /* ---- Layout ------------------------------------------------------------ */
-.exhibit { max-width: 1180px; margin: 0 auto; padding: 40px 28px 120px; }
+.exhibit { max-width: 1180px; margin: 0 auto; padding: 40px 28px 120px; transition: max-width .3s ease; }
+/* Expanded ("Wide") mode — widen toward the viewport, leaving a strip of
+   cosmos on either side. Neutralised on mobile (responsive block below). */
+.exhibit.wide { max-width: 80vw; }
+
+/* Slide eyebrow row: "Slide X of N" on the left, the Wide/Fit toggle right. */
+.slide-eyebrow-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.slide-eyebrow-row .section-eyebrow { margin: 0; }
+.wide-toggle { gap: 7px; }
+.wide-toggle .wide-toggle__icon { font-size: 13px; color: var(--accent); }
+.wide-toggle.is-active { color: var(--accent-ink); background: var(--accent-soft); border-color: var(--accent); }
+.wide-toggle.is-active .wide-toggle__icon { color: var(--accent-ink); }
 
 .section-eyebrow {
   font-family: var(--mono); font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
@@ -80,7 +91,10 @@ code {
   background: var(--paper); border: 1px solid var(--line-strong); border-radius: 16px;
   box-shadow: var(--shadow-lg); overflow: hidden;
 }
-.slide__body { display: grid; grid-template-columns: 1.05fr .95fr; min-height: 520px; }
+/* Desktop: a fixed outer height so prev/next never resizes the slide; the
+   text column scrolls internally while the visual fills the height. Mobile
+   relaxes this to natural height (see the responsive block below). */
+.slide__body { display: grid; grid-template-columns: 1.05fr .95fr; height: 600px; }
 
 /* Visual area */
 .slide__visual {
@@ -89,7 +103,16 @@ code {
   border-right: 1px solid var(--line);
   display: flex; flex-direction: column; justify-content: space-between; padding: 22px;
 }
-.slide__visual img { width: 100%; height: 100%; object-fit: cover; border-radius: 8px; }
+/* Real photo: full-bleed behind the overlaid chrome (era pill, fig, caption). */
+.slide__photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+.slide__visual--photo .visual__row,
+.slide__visual--photo .visual__center { position: relative; z-index: 1; }
+/* Caption needs a scrim to stay legible over an arbitrary photo. */
+.slide__visual--photo .visual__caption {
+  background: color-mix(in oklab, var(--paper) 84%, transparent);
+  backdrop-filter: blur(3px); border: 1px solid var(--line);
+  border-radius: 8px; padding: 8px 12px; color: var(--ink-muted); max-width: none;
+}
 .visual__row { display: flex; justify-content: space-between; align-items: flex-start; }
 .visual__row--bottom { align-items: flex-end; }
 .era-pill {
@@ -106,8 +129,9 @@ code {
 }
 .visual__note { font-family: var(--mono); font-size: 10px; color: var(--ink-faint); }
 
-/* Text area */
-.slide__text { padding: 34px 36px; display: flex; flex-direction: column; }
+/* Text area — scrolls inside the fixed-height slide on desktop (min-height:0
+   lets a flex item shrink below its content so overflow can kick in). */
+.slide__text { padding: 34px 36px; display: flex; flex-direction: column; overflow-y: auto; min-height: 0; }
 .slide__meta { display: flex; align-items: baseline; gap: 14px; margin-bottom: 6px; }
 .slide__year { font-family: var(--display); font-size: 54px; font-weight: 600; line-height: 1; color: var(--accent-ink); letter-spacing: -.02em; }
 .slide__who { font-family: var(--mono); font-size: 11px; color: var(--ink-faint); }
@@ -666,9 +690,12 @@ code {
    ========================================================================= */
 @media (max-width: 720px) {
   .exhibit { padding: 24px 16px 96px; }
-  .slide__body { grid-template-columns: 1fr; min-height: 0; }
+  /* Wide mode is a desktop affordance — let the slide use the full width on phones. */
+  .exhibit.wide { max-width: 1180px; }
+  /* Natural height + no inner scroll: the whole slide grows with its content. */
+  .slide__body { grid-template-columns: 1fr; height: auto; }
   .slide__visual { border-right: none; border-bottom: 1px solid var(--line); min-height: 180px; }
-  .slide__text { padding: 22px 20px; }
+  .slide__text { padding: 22px 20px; overflow-y: visible; }
   .slide__year { font-size: 38px; }
   .slide__title { font-size: 23px; }
   .brand__tag { display: none; }

@@ -60,7 +60,7 @@
   </header>
 
   <!-- ============ MAIN ============ -->
-  <main class="exhibit" id="main" data-cloak>
+  <main class="exhibit" id="main" data-cloak :class="{ wide: wide }">
 
     <!-- loading -->
     <div class="app-status" data-if="view === 'loading'">Loading the timeline…</div>
@@ -76,22 +76,30 @@
 
     <!-- ready: the slide -->
     <div data-if="view === 'ready' && screen === 'slide'">
-      <div class="section-eyebrow">{{ 'Slide ' + (activeIdx + 1) + ' of ' + nodeCount }}</div>
+      <div class="slide-eyebrow-row">
+        <div class="section-eyebrow">{{ 'Slide ' + (activeIdx + 1) + ' of ' + nodeCount }}</div>
+        <button class="btn btn--chip wide-toggle" data-action="click" data-fn="toggleWide"
+                :class="{ 'is-active': wide }" :aria-pressed="wide"
+                :aria-label="wide ? 'Fit slide to default width' : 'Widen the slide'">
+          <span class="wide-toggle__icon" aria-hidden="true">{{ wide ? '⤡' : '⤢' }}</span>{{ wide ? 'Fit' : 'Wide' }}
+        </button>
+      </div>
 
       <article class="slide" aria-label="Timeline slide">
         <div class="slide__body">
 
-          <!-- VISUAL -->
-          <div class="slide__visual">
+          <!-- VISUAL — real photo when the node has one, striped placeholder otherwise -->
+          <div class="slide__visual" :class="{ 'slide__visual--photo': cur.image }">
+            <img class="slide__photo" data-if="cur.image" :src="cur.image" :alt="cur.caption">
             <div class="visual__row">
               <span class="era-pill">{{ cur.eraName }}</span>
               <span class="fig-tag">{{ cur.fig }}</span>
             </div>
             <div class="visual__center">
-              <div class="ph">image placeholder</div>
+              <div class="ph" data-if="!cur.image">image placeholder</div>
               <div class="visual__caption">{{ cur.caption }}</div>
             </div>
-            <div class="visual__row visual__row--bottom">
+            <div class="visual__row visual__row--bottom" data-if="!cur.image">
               <span class="visual__note">drop archival photo / diagram</span>
               <span class="visual__note">1600 × 1200</span>
             </div>
