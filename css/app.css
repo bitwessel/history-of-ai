@@ -206,6 +206,9 @@ code {
 .tick__year { font-family: var(--mono); font-size: 9px; color: var(--ink-faint); }
 .tick--active .tick__year { color: var(--accent-ink); }
 .tick__challenge { position: absolute; top: -3px; width: 5px; height: 5px; border-radius: 50%; background: var(--accent); }
+/* Once a challenge has been answered, the dot reflects the outcome. */
+.tick__challenge--correct { background: var(--good); }
+.tick__challenge--incorrect { background: var(--bad); }
 
 .scrubber__legend {
   display: flex; justify-content: space-between; margin-top: 6px;
@@ -220,6 +223,15 @@ code {
 .challenges-toggle .ch-glyph { font-size: 13px; color: var(--accent); }
 .challenges-toggle.is-off { color: var(--ink-muted); }
 .challenges-toggle.is-off .ch-glyph { color: var(--ink-faint); }
+
+/* Header chip: running challenge score */
+.ch-score {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--mono); font-size: 11px; letter-spacing: .04em;
+  color: var(--ink-muted); background: var(--surface);
+  border: 1px solid var(--line-strong); border-radius: 7px; padding: 7px 11px;
+}
+.ch-score__check { color: var(--good); font-size: 12px; }
 
 /* Wrapper: sits between .level--deep and .slide__spacer */
 .challenge-wrap { margin-top: 18px; }

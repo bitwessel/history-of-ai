@@ -46,6 +46,9 @@
               :aria-label="(challengesOn ? 'Turn off' : 'Turn on') + ' challenges'">
         <span class="ch-glyph" aria-hidden="true">{{ challengesOn ? '◇' : '◈' }}</span>Challenges
       </button>
+      <span class="ch-score" data-if="challengesOn" title="challenges answered correctly">
+        <span class="ch-score__check" aria-hidden="true">✓</span>{{ chScore.correct }} / {{ chScore.total }}
+      </span>
       <button class="btn btn--chip" data-action="click" data-fn="toggleTheme"
               :aria-label="'Switch to ' + (theme === 'dark' ? 'light' : 'dark') + ' theme'">
         <span class="dot" aria-hidden="true"></span>{{ theme === 'dark' ? 'Dark' : 'Light' }}
@@ -371,7 +374,9 @@
                         :title="t.title" :aria-label="t.title" :aria-current="t.active">
                   <span class="tick__dot" aria-hidden="true"></span>
                   <span class="tick__year">{{ t.year }}</span>
-                  <span class="tick__challenge" data-if="t.showChallenge" aria-hidden="true"></span>
+                  <span class="tick__challenge"
+                        :class="{ 'tick__challenge--correct': t.result === 'correct', 'tick__challenge--incorrect': t.result === 'incorrect' }"
+                        data-if="t.showChallenge" aria-hidden="true"></span>
                 </button>
               </template>
             </div>

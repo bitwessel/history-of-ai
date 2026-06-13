@@ -124,6 +124,31 @@ function resetChallenge() {
   setValue('chEst', null);      // estimate-number: current slider value (null = unset)
 }
 
+/** Record the outcome of the current node's challenge. Accumulates across the
+ *  session — deliberately NOT reset on slide change — so the scrubber dots and
+ *  header score reflect everything the visitor has tried. A node maps to one
+ *  of 'correct' | 'incorrect' | 'revealed' (predict-word is a reveal, not
+ *  graded). Re-answering a slide overwrites its prior outcome. */
+function recordResult(id, res) {
+  if (!id) return;
+  setValue('chResults', { ...(appState.chResults || {}), [id]: res });
+}
+
+/** Score across all gradeable challenges: { correct, total }. "Gradeable"
+ *  excludes predict-word (a reveal) and any type whose UI isn't implemented. */
+function buildChScore(state) {
+  const nodes = Array.isArray(state.nodes) ? state.nodes : [];
+  const results = state.chResults || {};
+  let total = 0, correct = 0;
+  for (const n of nodes) {
+    const ch = n.challenge;
+    if (!ch || !IMPLEMENTED_CHALLENGE_TYPES.has(ch.type) || ch.type === 'predict-word') continue;
+    total++;
+    if (results[n.id] === 'correct') correct++;
+  }
+  return { correct, total };
+}
+
 /** Build the list of multiple-choice option objects for the template loop.
  *  Each item: { label, idx, picked, correct, state }
  *  `state` is 'neutral' | 'correct' | 'incorrect' — drives CSS classes.
@@ -203,13 +228,15 @@ function buildTicks(state) {
   const n = nodes.length;
   const active = clampIdx(state.activeIdx, n);
   const challengesOn = !!state.challengesOn;
+  const results = state.chResults || {};
   return nodes.map((node, idx) => ({
     idx,
     year: node.year,
     left: (n > 1 ? (idx / (n - 1)) * 100 : 0) + '%',
     active: idx === active,
     title: node.year + ' · ' + node.title,
-    showChallenge: !!node.challenge && IMPLEMENTED_CHALLENGE_TYPES.has(node.challenge.type) && challengesOn
+    showChallenge: !!node.challenge && IMPLEMENTED_CHALLENGE_TYPES.has(node.challenge.type) && challengesOn,
+    result: results[node.id]  // 'correct' | 'incorrect' | 'revealed' | undefined
   }));
 }
 
@@ -324,10 +351,16 @@ function boot() {
   setValue('chOrder', null);   // order-events: working order (array of origIdx)
   setValue('chMyth', null);    // myth-fact: 'myth'|'fact'|null
   setValue('chEst', null);     // estimate-number: slider value (null = unset)
+  // Accumulated challenge outcomes: { nodeId: 'correct'|'incorrect'|'revealed' }.
+  // Persists across slide changes (NOT reset by resetChallenge) for the
+  // scrubber dots + header score.
+  setValue('chResults', {});
 
   // Derived state — ports the design prototype's renderVals().
   computed('cur', ['activeIdx', 'nodes', 'eras'], buildCur);
-  computed('ticks', ['activeIdx', 'nodes', 'challengesOn'], buildTicks);
+  computed('ticks', ['activeIdx', 'nodes', 'challengesOn', 'chResults'], buildTicks);
+  // Running challenge score for the header chip.
+  computed('chScore', ['chResults', 'nodes', 'challengesOn'], buildChScore);
   // Computed list for the multiple-choice options loop.
   computed('mcOptions', ['cur', 'chPick', 'chFb'], buildMcOptions);
   // Computed GitHub links (edit / report) keyed on current slide + manifest.
@@ -391,7 +424,9 @@ function boot() {
     if (!ch || appState.chFb !== 'neutral') return; // locked after first pick
     const idx = Number(el.dataset.idx);
     setValue('chPick', idx);
-    setValue('chFb', idx === ch.answer ? 'correct' : 'incorrect');
+    const res = idx === ch.answer ? 'correct' : 'incorrect';
+    setValue('chFb', res);
+    recordResult(appState.cur.id, res);
   });
 
   // Guess-the-year: the range slider updates this path via data-model.
@@ -407,7 +442,9 @@ function boot() {
       ? Number(appState.chYear)
       : Math.round(((ch.range && ch.range.min) || ch.answer) + ((ch.range && ch.range.max - ch.range.min) || 0) / 2);
     const diff = Math.abs(guess - ch.answer);
-    setValue('chFb', diff <= (ch.tolerance || 0) ? 'correct' : 'incorrect');
+    const res = diff <= (ch.tolerance || 0) ? 'correct' : 'incorrect';
+    setValue('chFb', res);
+    recordResult(appState.cur.id, res);
   });
 
   // Reset the guess-the-year so the visitor can try again.
@@ -431,6 +468,8 @@ function boot() {
     setValue('chReveal', true);
     // Show the "correct" feedback message on reveal.
     setValue('chFb', 'correct');
+    // predict-word is a reveal, not a graded answer — tracked separately.
+    recordResult(appState.cur.id, 'revealed');
   });
 
   // Hide the revealed word again.
@@ -449,7 +488,9 @@ function boot() {
     setValue('chMyth', pick);
     // isMyth true → correct answer is 'myth'
     const correct = ch.isMyth ? 'myth' : 'fact';
-    setValue('chFb', pick === correct ? 'correct' : 'incorrect');
+    const res = pick === correct ? 'correct' : 'incorrect';
+    setValue('chFb', res);
+    recordResult(appState.cur.id, res);
   });
 
   // ---- Wave 3: estimate-number handlers ----
@@ -470,7 +511,9 @@ function boot() {
       : ch.answer;
     const guess = appState.chEst !== null ? Number(appState.chEst) : mid;
     const diff = Math.abs(guess - ch.answer);
-    setValue('chFb', diff <= (ch.tolerance || 0) ? 'correct' : 'incorrect');
+    const res = diff <= (ch.tolerance || 0) ? 'correct' : 'incorrect';
+    setValue('chFb', res);
+    recordResult(appState.cur.id, res);
   });
 
   // Reset the estimate so visitor can try again.
@@ -553,6 +596,7 @@ function boot() {
       if ((items[order[i]] || {}).year < (items[order[i - 1]] || {}).year) correct = false;
     }
     setValue('chFb', correct ? 'correct' : 'incorrect');
+    recordResult(appState.cur.id, correct ? 'correct' : 'incorrect');
   });
 
   // ---- Sources drawer handlers ----
