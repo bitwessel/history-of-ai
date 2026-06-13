@@ -424,6 +424,10 @@ code {
 }
 .ch-order-row:not(.ch-order-row--locked):hover { border-color: var(--accent); }
 .ch-order-row--locked { opacity: .8; }
+/* Drag reordering feedback */
+.ch-order-row[draggable="true"]:not(.ch-order-row--locked) { cursor: grab; }
+.ch-order-row--dragging { opacity: .45; cursor: grabbing; }
+.ch-order-row--dragover { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-soft); }
 .ch-order-handle {
   font-family: var(--mono); color: var(--ink-faint);
   letter-spacing: -2px; font-size: 16px; cursor: grab; flex: none;

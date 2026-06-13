@@ -31,6 +31,7 @@ const savedWide = readPref('hai.wide');
 const initialWide = savedWide === '1';  // default off (fit to the standard column)
 
 let sky = null;  // starfield controller, created at boot
+let orderDragFrom = null;  // origin position of an in-flight order-events drag
 
 // Challenge types whose UI is implemented. A node may carry challenge data for
 // a type that isn't built yet (content can run ahead of UI); those stay dormant
@@ -314,6 +315,63 @@ function buildEraGroups(state) {
     });
   }
   return result;
+}
+
+// ---- Order-events drag-and-drop ------------------------------------------
+
+/** Resolve the .ch-order-row (and its $index) under an event target. */
+function orderRowAt(target) {
+  const row = target && target.closest ? target.closest('.ch-order-row') : null;
+  return row ? { row, pos: Number(row.dataset.pos) } : null;
+}
+
+/** Wire HTML5 drag reordering for order-events. spektrum binds one event per
+ *  element and data-each rebuilds the rows on every reorder, so we delegate the
+ *  drag events to the persistent .ch-order-list container (present from first
+ *  bind, just display:none until an order-events challenge is open) and read
+ *  the row via closest(). The ▲/▼ buttons and checkOrder are untouched. */
+function setupOrderDrag() {
+  const list = document.querySelector('.ch-order-list');
+  if (!list) return;
+  const clearMarks = () => list.querySelectorAll('.ch-order-row--dragging, .ch-order-row--dragover')
+    .forEach(r => r.classList.remove('ch-order-row--dragging', 'ch-order-row--dragover'));
+
+  list.addEventListener('dragstart', (e) => {
+    if (appState.chFb === 'correct') { e.preventDefault(); return; }  // locked once solved
+    const hit = orderRowAt(e.target);
+    if (!hit) return;
+    orderDragFrom = hit.pos;
+    hit.row.classList.add('ch-order-row--dragging');
+    if (e.dataTransfer) { e.dataTransfer.effectAllowed = 'move'; try { e.dataTransfer.setData('text/plain', String(hit.pos)); } catch { /* some browsers */ } }
+  });
+
+  list.addEventListener('dragover', (e) => {
+    if (orderDragFrom === null) return;
+    e.preventDefault();  // required for the element to be a valid drop target
+    if (e.dataTransfer) e.dataTransfer.dropEffect = 'move';
+    const hit = orderRowAt(e.target);
+    list.querySelectorAll('.ch-order-row--dragover').forEach(r => { if (!hit || r !== hit.row) r.classList.remove('ch-order-row--dragover'); });
+    if (hit && hit.pos !== orderDragFrom) hit.row.classList.add('ch-order-row--dragover');
+  });
+
+  list.addEventListener('drop', (e) => {
+    e.preventDefault();
+    const from = orderDragFrom;
+    orderDragFrom = null;
+    const hit = orderRowAt(e.target);
+    clearMarks();
+    if (from === null || !hit || appState.chFb === 'correct') return;
+    const to = hit.pos;
+    if (to === from || Number.isNaN(from) || Number.isNaN(to)) return;
+    const order = (appState.chOrder || []).slice();
+    if (from < 0 || from >= order.length || to < 0 || to >= order.length) return;
+    const [moved] = order.splice(from, 1);
+    order.splice(to, 0, moved);
+    setValue('chOrder', order);
+    if (appState.chFb === 'incorrect') setValue('chFb', 'neutral');
+  });
+
+  list.addEventListener('dragend', () => { orderDragFrom = null; clearMarks(); });
 }
 
 // ---- Boot ----------------------------------------------------------------
@@ -615,6 +673,9 @@ function boot() {
 
   bindDOM();
   run();
+
+  // Delegated drag reordering for order-events (rows are recreated by data-each).
+  setupOrderDrag();
 
   // Animated cosmic background — created once, driven imperatively by the toggles.
   const canvas = document.getElementById('cosmos');

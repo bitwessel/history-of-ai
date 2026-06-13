@@ -299,7 +299,8 @@
                   <p class="challenge-card__prompt">{{ cur.challenge.prompt }}</p>
                   <div class="ch-order-list" aria-label="Reorderable events list">
                     <template data-each="orderList" data-as="row" data-key="row.origIdx">
-                      <div class="ch-order-row" :class="{ 'ch-order-row--locked': chFb === 'correct' }" role="listitem">
+                      <div class="ch-order-row" :class="{ 'ch-order-row--locked': chFb === 'correct' }" role="listitem"
+                           draggable="true" :data-pos="$index">
                         <span class="ch-order-handle" aria-hidden="true">⠿</span>
                         <span class="ch-order-year">{{ row.year }}</span>
                         <span class="ch-order-label">{{ row.label }}</span>
