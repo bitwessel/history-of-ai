@@ -1,0 +1,45 @@
+{
+  "id": "transformers-2017",
+  "era": "the-learning-revolution",
+  "year": 2017,
+  "title": "Attention Is All You Need",
+  "who": "Vaswani et al. (Google Brain)",
+  "fig": "4.7",
+  "caption": "The Transformer architecture: stacked multi-head self-attention and feed-forward layers replace recurrence entirely.",
+  "levels": {
+    "overview": {
+      "text": "In 2017, Ashish Vaswani and colleagues at Google published 'Attention Is All You Need,' introducing the Transformer architecture. By replacing recurrent connections with multi-head self-attention, the model could process all tokens in a sequence in parallel — dramatically speeding training and enabling much larger models. The Transformer became the dominant architecture for natural language processing and later spread to vision, audio and protein structure prediction.",
+      "image": "",
+      "tags": ["self-attention", "NLP", "Google Brain"]
+    },
+    "deep": {
+      "text": "The core of the Transformer is scaled dot-product attention: for each query Q, it computes a weighted sum of values V, where the weights come from the similarity of Q to keys K, scaled by the square root of the key dimension to prevent vanishing gradients in the softmax. Multiple attention heads run in parallel, each learning to attend to different aspects of the input, and their outputs are concatenated and projected.",
+      "math": "Attention(Q, K, V) = softmax(QKᵀ / √dₖ) V"
+    }
+  },
+  "challenge": {
+    "type": "multiple-choice",
+    "prompt": "What key mechanism did the Transformer replace in sequence modelling?",
+    "options": [
+      "Convolutional filters",
+      "Recurrent connections (RNNs/LSTMs)",
+      "Decision trees",
+      "Sparse autoencoders"
+    ],
+    "answer": 1,
+    "feedback": {
+      "correct": "Correct — the Transformer's title says it all: attention is *all* you need, meaning recurrent connections are dropped entirely.",
+      "incorrect": "The Transformer replaced recurrent connections (RNNs and LSTMs) with self-attention, allowing full parallelism during training."
+    }
+  },
+  "sources": [
+    {
+      "title": "Attention Is All You Need",
+      "author": "A. Vaswani, N. Shazeer, N. Parmar, J. Uszkoreit, L. Jones, A. N. Gomez, Ł. Kaiser & I. Polosukhin",
+      "year": 2017,
+      "publisher": "Advances in Neural Information Processing Systems 30 (NeurIPS)",
+      "url": "https://arxiv.org/abs/1706.03762",
+      "license": "© cited"
+    }
+  ]
+}

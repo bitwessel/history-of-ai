@@ -1,0 +1,44 @@
+{
+  "id": "deep-blue-1997",
+  "era": "the-learning-revolution",
+  "year": 1997,
+  "title": "Deep Blue Beats Kasparov",
+  "who": "IBM",
+  "fig": "4.3",
+  "caption": "IBM's Deep Blue chess computer faces Garry Kasparov in their 1997 rematch in New York.",
+  "levels": {
+    "overview": {
+      "text": "In May 1997, IBM's chess computer Deep Blue defeated reigning world champion Garry Kasparov 3.5–2.5 in a six-game match — the first time a computer had beaten a world chess champion under standard tournament conditions. Deep Blue evaluated up to 200 million positions per second using custom VLSI chips and a combination of alpha-beta search, opening book knowledge, and an endgame tablebase. Kasparov famously accused IBM of cheating, a claim the match transcripts do not support.",
+      "image": "",
+      "tags": ["chess", "search", "IBM Research"]
+    },
+    "deep": {
+      "text": "Deep Blue's strength came from brute-force alpha-beta pruning across a massive search tree, accelerated by 480 custom chess chips. Its evaluation function encoded decades of grandmaster knowledge as hand-tuned heuristics for material balance, king safety, pawn structure and piece mobility. The system is not a learning system in the modern sense; its power was engineering depth and domain-specific hardware.",
+      "math": ""
+    }
+  },
+  "challenge": {
+    "type": "order-events",
+    "prompt": "Put these AI milestones in chronological order.",
+    "items": [
+      { "year": 1943, "label": "McCulloch–Pitts neuron" },
+      { "year": 1956, "label": "Dartmouth coins 'AI'" },
+      { "year": 1958, "label": "The Perceptron" },
+      { "year": 1997, "label": "Deep Blue beats Kasparov" }
+    ],
+    "feedback": {
+      "correct": "Perfect — you've got the arc from the first artificial neuron right through to the chess championship.",
+      "incorrect": "Not quite. The order is: McCulloch–Pitts neuron (1943) → Dartmouth conference (1956) → Perceptron (1958) → Deep Blue (1997)."
+    }
+  },
+  "sources": [
+    {
+      "title": "Deep Blue",
+      "author": "M. Campbell, A. J. Hoane Jr. & F. Hsu",
+      "year": 2002,
+      "publisher": "Artificial Intelligence, Vol. 134",
+      "url": "https://doi.org/10.1016/S0004-3702(01)00129-1",
+      "license": "© cited"
+    }
+  ]
+}

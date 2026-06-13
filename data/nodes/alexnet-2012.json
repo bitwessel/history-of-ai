@@ -1,0 +1,42 @@
+{
+  "id": "alexnet-2012",
+  "era": "the-learning-revolution",
+  "year": 2012,
+  "title": "AlexNet & the ImageNet Shock",
+  "who": "Krizhevsky, Sutskever & Hinton",
+  "fig": "4.5",
+  "caption": "AlexNet's eight-layer convolutional architecture, trained on two GPUs, that halved the ImageNet error rate in 2012.",
+  "levels": {
+    "overview": {
+      "text": "At the 2012 ImageNet Large Scale Visual Recognition Challenge, Alex Krizhevsky, Ilya Sutskever and Geoffrey Hinton entered a deep convolutional neural network — later called AlexNet — that achieved a top-5 error of 15.3%, compared to 26.2% for the next-best entry. The gap was so large it shocked the computer-vision community and triggered a wholesale shift toward deep learning. AlexNet used ReLU activations, dropout regularisation, and GPU training — techniques that became standard across the field.",
+      "image": "",
+      "tags": ["ImageNet", "convolutional nets", "GPU training"]
+    },
+    "deep": {
+      "text": "AlexNet stacked five convolutional layers and three fully-connected layers, trained on 1.2 million labelled images across two NVIDIA GTX 580 GPUs. ReLU activations replaced saturating sigmoids, dramatically speeding convergence. Dropout — randomly zeroing half the hidden units during training — prevented co-adaptation and acted as an ensemble of exponentially many subnetworks, reducing overfitting without extra data.",
+      "math": "ReLU(x) = max(0, x)"
+    }
+  },
+  "challenge": {
+    "type": "estimate-number",
+    "prompt": "What was AlexNet's top-5 error rate on ImageNet 2012? (The runner-up scored about 26%)",
+    "answer": 15.3,
+    "unit": "%",
+    "range": { "min": 5, "max": 30 },
+    "tolerance": 3,
+    "feedback": {
+      "correct": "Right — 15.3% top-5 error, versus 26.2% for the next competitor. The gap was the real story.",
+      "incorrect": "AlexNet scored 15.3% top-5 error rate, nearly 11 percentage points better than the runner-up at 26.2%."
+    }
+  },
+  "sources": [
+    {
+      "title": "ImageNet Classification with Deep Convolutional Neural Networks",
+      "author": "A. Krizhevsky, I. Sutskever & G. E. Hinton",
+      "year": 2012,
+      "publisher": "Advances in Neural Information Processing Systems 25 (NeurIPS)",
+      "url": "https://papers.nips.cc/paper_files/paper/2012/hash/c399862d3b9d6b76c8436e924a68c45b-Abstract.html",
+      "license": "© cited"
+    }
+  ]
+}

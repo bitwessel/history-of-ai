@@ -1,0 +1,30 @@
+{
+  "id": "chatgpt-2022",
+  "era": "the-learning-revolution",
+  "year": 2022,
+  "title": "LLMs Go Mainstream",
+  "who": "OpenAI & many labs",
+  "fig": "4.9",
+  "caption": "ChatGPT's chat interface, launched November 2022, reached one million users in five days.",
+  "levels": {
+    "overview": {
+      "text": "OpenAI launched ChatGPT on 30 November 2022, making a large language model available to the general public via a free web interface. Within five days it had one million users; within two months, 100 million — the fastest consumer-product adoption in history at the time. ChatGPT is built on GPT-3.5, a Transformer trained on vast text corpora and then fine-tuned with reinforcement learning from human feedback (RLHF) to be helpful, harmless and honest. Its release compressed years of public and policy debate about AI into weeks.",
+      "image": "",
+      "tags": ["LLM", "RLHF", "OpenAI"]
+    },
+    "deep": {
+      "text": "Large language models are Transformer decoders trained to predict the next token in a sequence, scaled to billions of parameters and trillions of tokens. Instruction-following behaviour emerges from fine-tuning on human-written prompt–response pairs (supervised fine-tuning) followed by RLHF: a reward model trained on human preference comparisons guides policy optimisation via proximal policy optimisation (PPO). The result is a model that generates fluent, contextually appropriate text across an enormous range of tasks without task-specific training.",
+      "math": "P(token_{t+1} | token₁ … tokenₜ)  maximised during pre-training"
+    }
+  },
+  "sources": [
+    {
+      "title": "Training Language Models to Follow Instructions with Human Feedback",
+      "author": "L. Ouyang et al. (OpenAI)",
+      "year": 2022,
+      "publisher": "Advances in Neural Information Processing Systems 35 (NeurIPS)",
+      "url": "https://arxiv.org/abs/2203.02155",
+      "license": "© cited"
+    }
+  ]
+}

@@ -1,0 +1,39 @@
+{
+  "id": "perceptrons-book-1969",
+  "era": "symbolic-to-connectionist",
+  "year": 1969,
+  "title": "The XOR Problem",
+  "who": "Minsky & Papert",
+  "fig": "3.3",
+  "caption": "Minsky and Papert's 1969 book demonstrated that a single-layer perceptron cannot solve the XOR problem.",
+  "levels": {
+    "overview": {
+      "text": "In their 1969 book Perceptrons, Marvin Minsky and Seymour Papert delivered a rigorous mathematical critique of single-layer neural networks. Their central result was damning: a single-layer perceptron cannot learn the XOR function, because XOR is not linearly separable. The book's influence — combined with dwindling results from early AI programs — helped trigger the first 'AI winter,' sharply cutting funding and enthusiasm for neural network research throughout the 1970s.",
+      "image": "",
+      "tags": ["XOR", "linear separability", "AI winter"]
+    },
+    "deep": {
+      "text": "Minsky and Papert proved that any function a single-layer perceptron can compute must be linearly separable — expressible by a single hyperplane boundary in input space. XOR maps (0,0)→0, (1,1)→0, (0,1)→1, (1,0)→1; no straight line separates the two classes. The solution — adding hidden layers — was known in principle but lacked a practical training algorithm until backpropagation arrived in 1986.",
+      "math": "XOR(x₁, x₂) = 1  iff  x₁ ≠ x₂  (no linear boundary separates these four points)"
+    }
+  },
+  "challenge": {
+    "type": "myth-fact",
+    "statement": "Minsky and Papert's 1969 book proved that no neural network, of any size or depth, can learn the XOR function.",
+    "isMyth": true,
+    "feedback": {
+      "correct": "Correct — it's a myth. They proved single-layer perceptrons cannot solve XOR. Multi-layer networks can, but lacked a training algorithm at the time.",
+      "incorrect": "Actually this is a myth. Minsky and Papert showed single-layer perceptrons fail at XOR, not all networks. A two-layer network solves it easily."
+    }
+  },
+  "sources": [
+    {
+      "title": "Perceptrons: An Introduction to Computational Geometry",
+      "author": "M. Minsky & S. Papert",
+      "year": 1969,
+      "publisher": "MIT Press",
+      "url": "https://mitpress.mit.edu/9780262130431/",
+      "license": "© cited"
+    }
+  ]
+}

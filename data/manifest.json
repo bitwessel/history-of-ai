@@ -11,6 +11,13 @@
   "nodes": [
     "mcculloch-pitts-1943",
     "turing-test-1950",
-    "dartmouth-1956"
+    "dartmouth-1956",
+    "perceptron-1958",
+    "perceptrons-book-1969",
+    "backpropagation-1986",
+    "deep-blue-1997",
+    "alexnet-2012",
+    "transformers-2017",
+    "chatgpt-2022"
   ]
 }

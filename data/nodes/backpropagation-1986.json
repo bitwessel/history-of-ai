@@ -1,0 +1,45 @@
+{
+  "id": "backpropagation-1986",
+  "era": "the-learning-revolution",
+  "year": 1986,
+  "title": "Backpropagation",
+  "who": "Rumelhart, Hinton & Williams",
+  "fig": "4.1",
+  "caption": "A multilayer network trained by the backpropagation algorithm: error gradients flow backwards through layers to update every weight.",
+  "levels": {
+    "overview": {
+      "text": "In 1986, David Rumelhart, Geoffrey Hinton and Ronald Williams published 'Learning Representations by Back-propagating Errors' in Nature, demonstrating that the chain rule of calculus could efficiently compute gradients for every weight in a multilayer network. This made it practical to train networks with hidden layers — precisely the architecture that defeated Minsky and Papert's XOR critique. Though the core idea had appeared in earlier work, this paper's clarity and the Parallel Distributed Processing volumes popularized it across AI research.",
+      "image": "",
+      "tags": ["chain rule", "gradient descent", "multilayer networks"]
+    },
+    "deep": {
+      "text": "Backpropagation applies the chain rule layer by layer: the gradient of the loss with respect to any weight equals the upstream gradient multiplied by the local derivative. Starting from the output loss and propagating backwards, every weight in the network receives a gradient update in one efficient pass. The algorithm's cost is linear in the number of weights, making large networks trainable for the first time.",
+      "math": "∂L/∂wᵢⱼ = (∂L/∂aⱼ) · (∂aⱼ/∂wᵢⱼ)  where  aⱼ = Σᵢ wᵢⱼ xᵢ"
+    }
+  },
+  "challenge": {
+    "type": "predict-word",
+    "prompt": "Complete the core intuition of backpropagation:",
+    "sentence": "A perceptron adjusts its weights to reduce the ___.",
+    "answer": "error",
+    "alternatives": [
+      { "word": "error", "pct": 71 },
+      { "word": "loss", "pct": 18 },
+      { "word": "cost", "pct": 6 }
+    ],
+    "feedback": {
+      "correct": "Exactly — the whole point of backpropagation is to move weights in the direction that reduces prediction error.",
+      "incorrect": "The standard term is 'error' (or equivalently 'loss'). Backpropagation computes how each weight contributed to the error and adjusts accordingly."
+    }
+  },
+  "sources": [
+    {
+      "title": "Learning Representations by Back-propagating Errors",
+      "author": "D. E. Rumelhart, G. E. Hinton & R. J. Williams",
+      "year": 1986,
+      "publisher": "Nature, Vol. 323",
+      "url": "https://doi.org/10.1038/323533a0",
+      "license": "© cited"
+    }
+  ]
+}

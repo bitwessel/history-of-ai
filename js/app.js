@@ -30,6 +30,13 @@ const initialChallenges = savedChallenges === null ? true : savedChallenges === 
 
 let sky = null;  // starfield controller, created at boot
 
+// Challenge types whose UI is implemented. A node may carry challenge data for
+// a type that isn't built yet (content can run ahead of UI); those stay dormant
+// — no prompt, no scrubber marker — until their type is added here AND given a
+// render block in index.html. Wave 3 adds: predict-word, order-events,
+// myth-fact, estimate-number.
+const IMPLEMENTED_CHALLENGE_TYPES = new Set(['multiple-choice', 'guess-the-year']);
+
 // ---- Pure view-model builders -------------------------------------------
 
 /** The current node, flattened into the fields the slide template reads. */
@@ -59,10 +66,44 @@ function buildCur(state) {
     deep: dp.text || '',
     math,
     hasMath: math.length > 0,
-    hasChallenge: !!ch,
+    hasChallenge: !!ch && IMPLEMENTED_CHALLENGE_TYPES.has(ch.type),
     challenge: ch,
-    srcCount: Array.isArray(n.sources) ? n.sources.length : 0
+    srcCount: Array.isArray(n.sources) ? n.sources.length : 0,
+    sources: Array.isArray(n.sources)
+      ? n.sources.map(s => ({ ...s, urlHost: urlHostname(s.url || '') }))
+      : []
   };
+}
+
+/** Extract just the hostname from a URL for display. Falls back to the raw URL. */
+function urlHostname(url) {
+  try { return new URL(url).hostname; } catch { return url; }
+}
+
+/** Build the GitHub links object for the current slide.
+ *  Returns { edit, report } — both are full URLs ready to bind to :href.
+ *  Returns null when manifest hasn't loaded yet. */
+function buildLinks(state) {
+  const cur = state.cur;
+  const manifest = state.manifest;
+  if (!cur || !manifest) return { edit: '#', report: '#' };
+  const repo = manifest.repo || {};
+  const owner = repo.owner || '';
+  const name = repo.name || '';
+  const branch = repo.branch || 'main';
+  const dataDir = repo.dataDir || 'data/nodes';
+  const id = cur.id || '';
+  const title = cur.title || '';
+
+  const edit = `https://github.com/${owner}/${name}/edit/${branch}/${dataDir}/${id}.json`;
+
+  const issueTitle = encodeURIComponent(`Mistake on slide: ${title} (${id})`);
+  const issueBody = encodeURIComponent(
+    `**Slide:** ${id}\n**Title:** ${title}\n\nDescribe the mistake:\n\n<!-- Please link to the live slide if possible: https://bitwessel.github.io/history-of-ai/ -->`
+  );
+  const report = `https://github.com/${owner}/${name}/issues/new?title=${issueTitle}&body=${issueBody}&template=mistake.md`;
+
+  return { edit, report };
 }
 
 // ---- Challenge helpers ---------------------------------------------------
@@ -94,6 +135,8 @@ function resetChallenge() {
  *    c. Reset those paths inside resetChallenge().
  *    d. If you need a computed list (like mcOptions), add a computed()
  *       call in boot() keyed to the new state paths.
+ *    e. Add the type string to IMPLEMENTED_CHALLENGE_TYPES (top of file) so
+ *       its "Try a challenge?" prompt and scrubber marker switch on.
  * 4. Add CSS classes in app.css if the type needs unique visual treatment.
  * That's it — the data-if gate in HTML selects the right type UI automatically.
  */
@@ -126,7 +169,7 @@ function buildTicks(state) {
     left: (n > 1 ? (idx / (n - 1)) * 100 : 0) + '%',
     active: idx === active,
     title: node.year + ' · ' + node.title,
-    showChallenge: !!node.challenge && challengesOn
+    showChallenge: !!node.challenge && IMPLEMENTED_CHALLENGE_TYPES.has(node.challenge.type) && challengesOn
   }));
 }
 
@@ -164,6 +207,9 @@ function boot() {
   setValue('nodes', []);
   setValue('eras', []);
 
+  // Sources drawer state.
+  setValue('sourcesOpen', false);
+
   // Challenge UI state — kept separate from the cur computed so the
   // interaction state never pollutes the view-model.
   setValue('chOpen', false);   // whether the challenge panel is expanded
@@ -176,6 +222,8 @@ function boot() {
   computed('ticks', ['activeIdx', 'nodes', 'challengesOn'], buildTicks);
   // Computed list for the multiple-choice options loop.
   computed('mcOptions', ['cur', 'chPick', 'chFb'], buildMcOptions);
+  // Computed GitHub links (edit / report) keyed on current slide + manifest.
+  computed('links', ['cur', 'manifest'], buildLinks);
 
   // Handlers (must be registered before bindDOM so data-fn lookups resolve).
   defineFn('toggleTheme', () => {
@@ -247,6 +295,20 @@ function boot() {
     if (appState.chFb === 'incorrect') setValue('chFb', 'neutral');
   });
 
+  // ---- Sources drawer handlers ----
+
+  defineFn('openSources', () => {
+    setValue('sourcesOpen', true);
+  });
+
+  defineFn('closeSources', () => {
+    setValue('sourcesOpen', false);
+  });
+
+  // Noop: used on the drawer panel so click.stop prevents the backdrop
+  // from catching inner clicks (panel itself has data-action="click.stop").
+  defineFn('noop', () => {});
+
   bindDOM();
   run();
 
@@ -258,12 +320,15 @@ function boot() {
     sky.setActive(initialCosmos);
   }
 
-  // Arrow-key navigation (ignored while typing in a field).
+  // Arrow-key navigation + Escape to close the sources drawer.
+  // Ignored while typing in a field.
   window.addEventListener('keydown', (e) => {
     if (appState.view !== 'ready') return;
     const t = e.target;
     if (t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return;
-    if (e.key === 'ArrowLeft') { goTo((Number(appState.activeIdx) || 0) - 1); }
+    if (e.key === 'Escape') {
+      if (appState.sourcesOpen) { setValue('sourcesOpen', false); }
+    } else if (e.key === 'ArrowLeft') { goTo((Number(appState.activeIdx) || 0) - 1); }
     else if (e.key === 'ArrowRight') { goTo((Number(appState.activeIdx) || 0) + 1); }
   });
 

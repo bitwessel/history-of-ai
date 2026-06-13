@@ -152,7 +152,7 @@
               <!-- Expanded: challenge card -->
               <div class="challenge-card" data-if="chOpen">
                 <div class="challenge-card__header">
-                  <span class="challenge-card__type">Challenge · {{ cur.challenge && cur.challenge.type === 'multiple-choice' ? 'multiple choice' : 'guess the year' }}</span>
+                  <span class="challenge-card__type">Challenge · {{ cur.challenge ? cur.challenge.type.replace('-', ' ').replace('-', ' ') : '' }}</span>
                   <button class="challenge-card__close" data-action="click" data-fn="toggleChallenge"
                           aria-label="Collapse challenge">collapse ✕</button>
                 </div>
@@ -216,6 +216,26 @@
               </div><!-- /.challenge-card -->
             </div><!-- /.challenge-wrap -->
 
+            <!-- OPENNESS ROW (Sources · Edit · Report) -->
+            <div class="openness-row">
+              <button class="btn btn--chip openness-sources"
+                      data-if="cur.srcCount > 0"
+                      data-action="click" data-fn="openSources">
+                ⌗ Sources <span class="openness-sources__count">{{cur.srcCount}}</span>
+              </button>
+              <div class="openness-row__spacer"></div>
+              <a class="btn btn--ghost openness-edit"
+                 :href="links.edit"
+                 target="_blank" rel="noopener noreferrer">
+                <span aria-hidden="true">✎</span> Edit this slide
+              </a>
+              <a class="btn btn--ghost openness-report"
+                 :href="links.report"
+                 target="_blank" rel="noopener noreferrer">
+                <span aria-hidden="true">⚑</span> Report a mistake
+              </a>
+            </div>
+
             <div class="slide__spacer"></div>
           </div>
         </div>
@@ -255,5 +275,50 @@
       </article>
     </div>
   </main>
+
+  <!-- ============ SOURCES DRAWER ============ -->
+  <!-- Backdrop: click closes the drawer -->
+  <div class="sources-overlay" data-if="sourcesOpen"
+       data-action="click" data-fn="closeSources"
+       aria-hidden="true"></div>
+
+  <!-- Panel: click.stop prevents backdrop from catching inner clicks -->
+  <div class="sources-panel" data-if="sourcesOpen"
+       role="dialog" aria-modal="true" aria-label="Sources"
+       data-action="click.stop" data-fn="noop">
+
+    <div class="sources-panel__header">
+      <div>
+        <div class="sources-panel__eyebrow">Sources · {{cur.year}}</div>
+        <div class="sources-panel__title">{{cur.title}}</div>
+      </div>
+      <button class="sources-panel__close"
+              data-action="click" data-fn="closeSources"
+              aria-label="Close sources">✕</button>
+    </div>
+
+    <div class="sources-panel__body">
+      <template data-each="cur.sources" data-as="src">
+        <div class="source-card">
+          <div class="source-card__top">
+            <div class="source-card__title">{{src.title}}</div>
+            <span class="source-card__badge"
+                  :class="{ 'source-card__badge--cc': src.license === 'CC BY-SA', 'source-card__badge--pd': src.license === 'Public domain', 'source-card__badge--cited': src.license !== 'CC BY-SA' && src.license !== 'Public domain' }">
+              {{src.license}}
+            </span>
+          </div>
+          <div class="source-card__meta">{{src.author}} · {{src.publisher}} · {{src.year}}</div>
+          <a class="source-card__link" :href="src.url" target="_blank" rel="noopener noreferrer">
+            ↗ {{src.urlHost}}
+          </a>
+        </div>
+      </template>
+    </div>
+
+    <div class="sources-panel__footer">
+      <span>{{cur.srcCount}} {{cur.srcCount === 1 ? 'source' : 'sources'}}</span>
+    </div>
+  </div>
+
 </body>
 </html>

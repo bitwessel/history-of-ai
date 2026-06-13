@@ -1,0 +1,41 @@
+{
+  "id": "perceptron-1958",
+  "era": "symbolic-to-connectionist",
+  "year": 1958,
+  "title": "The Perceptron",
+  "who": "Frank Rosenblatt",
+  "fig": "3.1",
+  "caption": "Frank Rosenblatt's Mark I Perceptron machine at the Cornell Aeronautical Laboratory, 1958.",
+  "levels": {
+    "overview": {
+      "text": "In 1958, Cornell psychologist Frank Rosenblatt built the Perceptron — the first machine that could learn to classify patterns by adjusting its own weights from examples. Implemented on the Mark I hardware, it could learn to distinguish simple visual shapes. The New York Times reported it as a machine that could 'walk, talk, see, write, reproduce itself and be conscious of its existence' — a degree of hype that would haunt the field for decades.",
+      "image": "",
+      "tags": ["supervised learning", "weight update", "Cornell"]
+    },
+    "deep": {
+      "text": "A perceptron takes a weighted sum of binary inputs, passes it through a step function, and outputs a class label. If the output is wrong, each weight is nudged in proportion to the input and the error. This perceptron learning rule is guaranteed to converge to a correct solution if the classes are linearly separable — but only then.",
+      "math": "wᵢ ← wᵢ + η (y − ŷ) xᵢ"
+    }
+  },
+  "challenge": {
+    "type": "guess-the-year",
+    "prompt": "In what year did Frank Rosenblatt introduce the Perceptron?",
+    "answer": 1958,
+    "range": { "min": 1943, "max": 1980 },
+    "tolerance": 2,
+    "feedback": {
+      "correct": "Correct — Rosenblatt published 'The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain' in 1958.",
+      "incorrect": "It was 1958. Rosenblatt unveiled the Perceptron at the Cornell Aeronautical Laboratory that year."
+    }
+  },
+  "sources": [
+    {
+      "title": "The Perceptron: A Probabilistic Model for Information Storage and Organization in the Brain",
+      "author": "F. Rosenblatt",
+      "year": 1958,
+      "publisher": "Psychological Review, Vol. 65 No. 6",
+      "url": "https://doi.org/10.1037/h0042519",
+      "license": "© cited"
+    }
+  ]
+}

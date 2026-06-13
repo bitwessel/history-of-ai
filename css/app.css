@@ -307,6 +307,107 @@ code {
 }
 .ch-feedback__msg { font-size: 13px; line-height: 1.5; }
 
+/* ---- Openness row (Sources · Edit · Report) -------------------------------- */
+.openness-row {
+  display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  margin-top: 20px; padding-top: 14px; border-top: 1px solid var(--line);
+}
+.openness-row__spacer { flex: 1 1 auto; }
+.openness-sources {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--mono); font-size: 11px;
+  color: var(--ink); background: var(--surface); border: 1px solid var(--line-strong);
+  border-radius: 7px; padding: 7px 12px; cursor: pointer;
+}
+.openness-sources__count { color: var(--ink-faint); }
+.openness-edit,
+.openness-report {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--mono); font-size: 11px; color: var(--ink-muted);
+  background: transparent; border: none; padding: 6px 4px; cursor: pointer;
+  text-decoration: none;
+}
+.openness-edit:hover, .openness-report:hover { color: var(--ink); }
+
+/* ---- Sources drawer (overlay + panel) ------------------------------------- */
+.sources-overlay {
+  position: fixed; inset: 0; z-index: 80;
+  background: rgba(20, 14, 6, .34);
+  backdrop-filter: blur(2px);
+}
+.sources-panel {
+  position: fixed; top: 0; right: 0; z-index: 81;
+  height: 100%; width: min(440px, 92vw);
+  background: var(--surface); border-left: 1px solid var(--line-strong);
+  box-shadow: var(--shadow-lg);
+  display: flex; flex-direction: column;
+  animation: fadeUp .25s ease;
+}
+.sources-panel__header {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 20px 24px; border-bottom: 1px solid var(--line); gap: 12px;
+}
+.sources-panel__eyebrow {
+  font-family: var(--mono); font-size: 10px; letter-spacing: .16em;
+  text-transform: uppercase; color: var(--accent-ink);
+}
+.sources-panel__title {
+  font-family: var(--display); font-size: 21px; font-weight: 600; margin-top: 2px;
+}
+.sources-panel__close {
+  flex: none; width: 32px; height: 32px; border-radius: 8px;
+  border: 1px solid var(--line-strong); background: var(--paper);
+  cursor: pointer; color: var(--ink); font-size: 15px;
+  display: flex; align-items: center; justify-content: center;
+}
+.sources-panel__body {
+  padding: 14px 18px; overflow-y: auto; flex: 1 1 auto;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.sources-panel__footer {
+  margin-top: auto; padding: 14px 18px; border-top: 1px solid var(--line);
+  font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint);
+}
+
+/* Source citation card */
+.source-card {
+  background: var(--paper); border: 1px solid var(--line);
+  border-radius: 10px; padding: 14px 16px;
+}
+.source-card__top {
+  display: flex; justify-content: space-between; gap: 10px; align-items: flex-start;
+}
+.source-card__title {
+  font-family: var(--display); font-size: 16px; font-weight: 600;
+  line-height: 1.25; flex: 1;
+}
+.source-card__badge {
+  font-family: var(--mono); font-size: 9px; border-radius: 4px; padding: 3px 7px;
+  white-space: nowrap; height: fit-content; flex: none;
+}
+/* CC BY-SA → accent-soft / accent-ink */
+.source-card__badge--cc {
+  color: var(--accent-ink); background: var(--accent-soft);
+}
+/* Public domain → surface-2 / good-ink */
+.source-card__badge--pd {
+  color: var(--good-ink); background: var(--good-soft);
+}
+/* © cited → surface-2 / ink-muted with border */
+.source-card__badge--cited {
+  color: var(--ink-muted); background: var(--surface-2);
+  border: 1px solid var(--line);
+}
+.source-card__meta {
+  font-size: 13px; color: var(--ink-muted); margin-top: 4px;
+}
+.source-card__link {
+  font-family: var(--mono); font-size: 11px; color: var(--accent-ink);
+  text-decoration: none; display: inline-flex; align-items: center;
+  gap: 5px; margin-top: 8px;
+}
+.source-card__link:hover { text-decoration: underline; }
+
 /* ---- Loading / error states ------------------------------------------- */
 .app-status {
   display: flex; align-items: center; justify-content: center; min-height: 60vh;

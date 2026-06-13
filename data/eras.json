@@ -5,5 +5,19 @@
     "from": 1943,
     "to": 1956,
     "blurb": "Before there was a field, there were the ideas: that thought might be mechanized, that a machine could reason, learn, or be said to think at all."
+  },
+  {
+    "id": "symbolic-to-connectionist",
+    "name": "Symbolic to Connectionist",
+    "from": 1957,
+    "to": 1985,
+    "blurb": "AI swung between two poles: the symbolic camp that believed intelligence was manipulating symbols, and the connectionists who bet on networks of neuron-like units trained from data. Neither could yet deliver on its promises."
+  },
+  {
+    "id": "the-learning-revolution",
+    "name": "The Learning Revolution",
+    "from": 1986,
+    "to": 2099,
+    "blurb": "Backpropagation gave neural networks a practical training algorithm, but it took decades of hardware, data and architectural innovation before deep learning reshaped science, commerce and everyday life."
   }
 ]
