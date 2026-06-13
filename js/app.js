@@ -35,7 +35,7 @@ let sky = null;  // starfield controller, created at boot
 // — no prompt, no scrubber marker — until their type is added here AND given a
 // render block in index.html. Wave 3 adds: predict-word, order-events,
 // myth-fact, estimate-number.
-const IMPLEMENTED_CHALLENGE_TYPES = new Set(['multiple-choice', 'guess-the-year']);
+const IMPLEMENTED_CHALLENGE_TYPES = new Set(['multiple-choice', 'guess-the-year', 'predict-word', 'order-events', 'myth-fact', 'estimate-number']);
 
 // ---- Pure view-model builders -------------------------------------------
 
@@ -115,6 +115,11 @@ function resetChallenge() {
   setValue('chPick', null);
   setValue('chYear', null);     // null = not yet set; will be seeded from challenge data
   setValue('chFb', 'neutral');  // 'neutral' | 'correct' | 'incorrect'
+  // Wave 3 challenge types
+  setValue('chReveal', false);  // predict-word: whether the blank is revealed
+  setValue('chOrder', null);    // order-events: working order array (null = unseeded)
+  setValue('chMyth', null);     // myth-fact: 'myth' | 'fact' | null (unpicked)
+  setValue('chEst', null);      // estimate-number: current slider value (null = unset)
 }
 
 /** Build the list of multiple-choice option objects for the template loop.
@@ -153,6 +158,39 @@ function buildMcOptions(state) {
       else if (idx === pick) optState = 'incorrect';
     }
     return { label, idx, optState };
+  });
+}
+
+/** Split the predict-word sentence on ___ into before/after parts + alternatives.
+ *  Returns { before, after, answer, alternatives } or null when not applicable. */
+function buildPredictParts(state) {
+  const ch = state.cur && state.cur.challenge;
+  if (!ch || ch.type !== 'predict-word') return null;
+  const sentence = ch.sentence || '';
+  const sepIdx = sentence.indexOf('___');
+  if (sepIdx === -1) return { before: sentence, after: '', answer: ch.answer || '', alternatives: ch.alternatives || [] };
+  return {
+    before: sentence.slice(0, sepIdx),
+    after: sentence.slice(sepIdx + 3),
+    answer: ch.answer || '',
+    alternatives: ch.alternatives || []
+  };
+}
+
+/** Map chOrder (array of original item indices) to a display list.
+ *  Returns [{ origIdx, year, label }] in the current user ordering. */
+function buildOrderList(state) {
+  const ch = state.cur && state.cur.challenge;
+  if (!ch || ch.type !== 'order-events') return [];
+  const items = ch.items || [];
+  const order = state.chOrder;
+  if (!Array.isArray(order) || order.length === 0) {
+    // Not yet seeded — return items in correct order as a fallback (seeding happens on open).
+    return items.map((item, i) => ({ origIdx: i, year: item.year, label: item.label }));
+  }
+  return order.map(origIdx => {
+    const item = items[origIdx] || {};
+    return { origIdx, year: item.year || '', label: item.label || '' };
   });
 }
 
@@ -278,6 +316,11 @@ function boot() {
   setValue('chPick', null);    // index of the picked MC option (or null)
   setValue('chYear', null);    // current year slider value (null = unset)
   setValue('chFb', 'neutral'); // feedback state: 'neutral'|'correct'|'incorrect'
+  // Wave 3 challenge types
+  setValue('chReveal', false); // predict-word: blank revealed?
+  setValue('chOrder', null);   // order-events: working order (array of origIdx)
+  setValue('chMyth', null);    // myth-fact: 'myth'|'fact'|null
+  setValue('chEst', null);     // estimate-number: slider value (null = unset)
 
   // Derived state — ports the design prototype's renderVals().
   computed('cur', ['activeIdx', 'nodes', 'eras'], buildCur);
@@ -288,6 +331,9 @@ function boot() {
   computed('links', ['cur', 'manifest'], buildLinks);
   // Era groups for the overview screen.
   computed('eraGroups', ['activeIdx', 'nodes', 'eras', 'challengesOn'], buildEraGroups);
+  // Wave 3 computeds
+  computed('predictParts', ['cur'], buildPredictParts);
+  computed('orderList', ['cur', 'chOrder'], buildOrderList);
 
   // Handlers (must be registered before bindDOM so data-fn lookups resolve).
   defineFn('toggleTheme', () => {
@@ -368,6 +414,137 @@ function boot() {
     setValue('chYear', Number(el.value));
     // Only reset if incorrect — keep 'correct' locked in.
     if (appState.chFb === 'incorrect') setValue('chFb', 'neutral');
+  });
+
+  // ---- Wave 3: predict-word handlers ----
+
+  // Reveal the blank word.
+  defineFn('revealPredict', () => {
+    setValue('chReveal', true);
+    // Show the "correct" feedback message on reveal.
+    setValue('chFb', 'correct');
+  });
+
+  // Hide the revealed word again.
+  defineFn('resetPredict', () => {
+    setValue('chReveal', false);
+    setValue('chFb', 'neutral');
+  });
+
+  // ---- Wave 3: myth-fact handlers ----
+
+  // User picks 'myth' or 'fact'. data-value on the button sets el.dataset.value.
+  defineFn('pickMyth', (el) => {
+    const ch = appState.cur && appState.cur.challenge;
+    if (!ch || appState.chFb !== 'neutral') return; // locked after first pick
+    const pick = el.dataset.value; // 'myth' or 'fact'
+    setValue('chMyth', pick);
+    // isMyth true → correct answer is 'myth'
+    const correct = ch.isMyth ? 'myth' : 'fact';
+    setValue('chFb', pick === correct ? 'correct' : 'incorrect');
+  });
+
+  // ---- Wave 3: estimate-number handlers ----
+
+  // Slider change — update chEst and clear incorrect feedback.
+  defineFn('estSliderChange', (el) => {
+    setValue('chEst', Number(el.value));
+    if (appState.chFb === 'incorrect') setValue('chFb', 'neutral');
+  });
+
+  // Submit the estimate.
+  defineFn('submitEst', () => {
+    const ch = appState.cur && appState.cur.challenge;
+    if (!ch) return;
+    const range = ch.range || {};
+    const mid = range.min != null && range.max != null
+      ? range.min + (range.max - range.min) / 2
+      : ch.answer;
+    const guess = appState.chEst !== null ? Number(appState.chEst) : mid;
+    const diff = Math.abs(guess - ch.answer);
+    setValue('chFb', diff <= (ch.tolerance || 0) ? 'correct' : 'incorrect');
+  });
+
+  // Reset the estimate so visitor can try again.
+  defineFn('resetEst', () => {
+    setValue('chEst', null);
+    setValue('chFb', 'neutral');
+  });
+
+  // ---- Wave 3: order-events handlers ----
+
+  // Seed the chOrder array to a shuffled order (called when opening order-events).
+  // Guaranteed to not be identical to the correct order.
+  function seedOrderShuffle(items) {
+    const n = items.length;
+    const arr = Array.from({ length: n }, (_, i) => i);
+    // Fisher-Yates
+    for (let i = n - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    // Ensure the shuffle isn't already in correct order (all ascending by year).
+    const isCorrect = arr.every((origIdx, pos) => {
+      // Correct order = items sorted by year index 0,1,2... (they are given pre-sorted).
+      return origIdx === pos;
+    });
+    if (isCorrect && n >= 2) {
+      // Swap first two to guarantee scrambled.
+      [arr[0], arr[1]] = [arr[1], arr[0]];
+    }
+    return arr;
+  }
+
+  // Override toggleChallenge to also seed order-events.
+  defineFn('toggleChallenge', () => {
+    const wasOpen = appState.chOpen;
+    setValue('chOpen', !wasOpen);
+    // When opening an order-events challenge that hasn't been seeded, seed it.
+    if (!wasOpen) {
+      const ch = appState.cur && appState.cur.challenge;
+      if (ch && ch.type === 'order-events' && !Array.isArray(appState.chOrder)) {
+        const shuffled = seedOrderShuffle(ch.items || []);
+        setValue('chOrder', shuffled);
+      }
+    }
+  });
+
+  // Move an item up in the order list.
+  defineFn('orderMoveUp', (el) => {
+    const ch = appState.cur && appState.cur.challenge;
+    if (!ch || appState.chFb === 'correct') return; // locked when correct
+    const pos = Number(el.dataset.pos);
+    if (pos <= 0) return;
+    const order = (appState.chOrder || []).slice();
+    [order[pos - 1], order[pos]] = [order[pos], order[pos - 1]];
+    setValue('chOrder', order);
+    if (appState.chFb === 'incorrect') setValue('chFb', 'neutral');
+  });
+
+  // Move an item down in the order list.
+  defineFn('orderMoveDown', (el) => {
+    const ch = appState.cur && appState.cur.challenge;
+    if (!ch || appState.chFb === 'correct') return;
+    const pos = Number(el.dataset.pos);
+    const order = (appState.chOrder || []).slice();
+    if (pos >= order.length - 1) return;
+    [order[pos], order[pos + 1]] = [order[pos + 1], order[pos]];
+    setValue('chOrder', order);
+    if (appState.chFb === 'incorrect') setValue('chFb', 'neutral');
+  });
+
+  // Check whether the current order is correct.
+  defineFn('checkOrder', () => {
+    const ch = appState.cur && appState.cur.challenge;
+    if (!ch) return;
+    const items = ch.items || [];
+    const order = appState.chOrder || [];
+    // Correct if the year sequence in chOrder is non-decreasing (= ascending).
+    let correct = order.length === items.length;
+    for (let i = 1; i < order.length && correct; i++) {
+      if ((items[order[i]] || {}).year < (items[order[i - 1]] || {}).year) correct = false;
+    }
+    setValue('chFb', correct ? 'correct' : 'incorrect');
   });
 
   // ---- Sources drawer handlers ----

@@ -210,6 +210,106 @@
                   </div>
                 </div>
 
+                <!-- ── TYPE: myth-fact ── -->
+                <div data-if="cur.challenge.type === 'myth-fact'">
+                  <p class="challenge-card__prompt ch-myth-statement">{{ cur.challenge.statement }}</p>
+                  <div class="ch-myth-buttons">
+                    <button class="ch-myth-btn"
+                            :class="{ 'ch-myth-btn--correct': chMyth === 'myth' && chFb === 'correct', 'ch-myth-btn--incorrect': chMyth === 'myth' && chFb === 'incorrect', 'ch-myth-btn--reveal': chFb !== 'neutral' && (cur.challenge.isMyth ? true : false) && chMyth !== 'myth' }"
+                            data-action="click" data-fn="pickMyth" data-value="myth"
+                            :disabled="chFb !== 'neutral'">
+                      <span class="ch-myth-btn__icon" aria-hidden="true">{{ chMyth === 'myth' && chFb === 'correct' ? '✓' : chMyth === 'myth' && chFb === 'incorrect' ? '✕' : '◈' }}</span>
+                      It's a myth
+                    </button>
+                    <button class="ch-myth-btn"
+                            :class="{ 'ch-myth-btn--correct': chMyth === 'fact' && chFb === 'correct', 'ch-myth-btn--incorrect': chMyth === 'fact' && chFb === 'incorrect', 'ch-myth-btn--reveal': chFb !== 'neutral' && (!cur.challenge.isMyth ? true : false) && chMyth !== 'fact' }"
+                            data-action="click" data-fn="pickMyth" data-value="fact"
+                            :disabled="chFb !== 'neutral'">
+                      <span class="ch-myth-btn__icon" aria-hidden="true">{{ chMyth === 'fact' && chFb === 'correct' ? '✓' : chMyth === 'fact' && chFb === 'incorrect' ? '✕' : '◇' }}</span>
+                      It's a fact
+                    </button>
+                  </div>
+                </div>
+
+                <!-- ── TYPE: estimate-number ── -->
+                <div data-if="cur.challenge.type === 'estimate-number'">
+                  <p class="challenge-card__prompt">{{ cur.challenge.prompt }}</p>
+                  <div class="ch-year-display" aria-live="polite" aria-label="Current estimate">
+                    {{ chEst !== null ? chEst : (cur.challenge && cur.challenge.range ? Math.round(cur.challenge.range.min + (cur.challenge.range.max - cur.challenge.range.min) / 2) : '') }}{{ cur.challenge && cur.challenge.unit ? cur.challenge.unit : '' }}
+                  </div>
+                  <div class="ch-year-track" aria-hidden="true">
+                    <div class="ch-year-track__line"></div>
+                    <input type="range" class="ch-year-slider ch-est-slider"
+                           :min="cur.challenge && cur.challenge.range && cur.challenge.range.min"
+                           :max="cur.challenge && cur.challenge.range && cur.challenge.range.max"
+                           step="0.1"
+                           :value="chEst !== null ? chEst : (cur.challenge && cur.challenge.range ? Math.round(cur.challenge.range.min + (cur.challenge.range.max - cur.challenge.range.min) / 2) : 0)"
+                           data-action="input" data-fn="estSliderChange"
+                           :aria-label="'Estimate between ' + (cur.challenge && cur.challenge.range ? cur.challenge.range.min : '') + ' and ' + (cur.challenge && cur.challenge.range ? cur.challenge.range.max : '')">
+                  </div>
+                  <div class="ch-year-labels">
+                    <span>{{ cur.challenge && cur.challenge.range ? cur.challenge.range.min : '' }}{{ cur.challenge && cur.challenge.unit ? cur.challenge.unit : '' }}</span>
+                    <span>{{ cur.challenge && cur.challenge.range ? cur.challenge.range.max : '' }}{{ cur.challenge && cur.challenge.unit ? cur.challenge.unit : '' }}</span>
+                  </div>
+                  <div class="ch-year-actions">
+                    <button class="btn btn--primary ch-year-submit"
+                            data-if="chFb === 'neutral'"
+                            data-action="click" data-fn="submitEst">Reveal the answer</button>
+                    <button class="btn btn--secondary ch-year-retry"
+                            data-if="chFb === 'incorrect'"
+                            data-action="click" data-fn="resetEst">↺ Try again</button>
+                  </div>
+                </div>
+
+                <!-- ── TYPE: predict-word ── -->
+                <div data-if="cur.challenge.type === 'predict-word'">
+                  <p class="challenge-card__prompt">{{ cur.challenge.prompt }}</p>
+                  <div class="ch-predict-sentence" aria-live="polite">
+                    <span class="ch-predict-before">{{ predictParts ? predictParts.before : '' }}</span><span class="ch-predict-blank" data-if="!chReveal" aria-label="hidden word">···</span><span class="ch-predict-answer" data-if="chReveal">{{ predictParts ? predictParts.answer : '' }}</span><span class="ch-predict-after">{{ predictParts ? predictParts.after : '' }}</span>
+                  </div>
+                  <div class="ch-predict-alts" data-if="chReveal" aria-label="Model's top predictions">
+                    <span class="ch-predict-alts__label">model's top guesses: </span>
+                    <template data-each="predictParts.alternatives" data-as="alt">
+                      <span class="ch-predict-alt" :class="{ 'ch-predict-alt--top': $first }">{{ alt.word }} {{ alt.pct }}%</span>
+                    </template>
+                  </div>
+                  <div class="ch-year-actions">
+                    <button class="btn btn--primary ch-year-submit"
+                            data-if="!chReveal"
+                            data-action="click" data-fn="revealPredict">Reveal the word</button>
+                    <button class="btn btn--secondary ch-year-retry"
+                            data-if="chReveal"
+                            data-action="click" data-fn="resetPredict">↺ Try again</button>
+                  </div>
+                </div>
+
+                <!-- ── TYPE: order-events ── -->
+                <div data-if="cur.challenge.type === 'order-events'">
+                  <p class="challenge-card__prompt">{{ cur.challenge.prompt }}</p>
+                  <div class="ch-order-list" aria-label="Reorderable events list">
+                    <template data-each="orderList" data-as="row" data-key="row.origIdx">
+                      <div class="ch-order-row" :class="{ 'ch-order-row--locked': chFb === 'correct' }" role="listitem">
+                        <span class="ch-order-handle" aria-hidden="true">⠿</span>
+                        <span class="ch-order-year">{{ row.year }}</span>
+                        <span class="ch-order-label">{{ row.label }}</span>
+                        <div class="ch-order-btns">
+                          <button class="ch-order-btn" aria-label="Move up"
+                                  data-action="click" data-fn="orderMoveUp" :data-pos="$index"
+                                  :disabled="$first || chFb === 'correct'">▲</button>
+                          <button class="ch-order-btn" aria-label="Move down"
+                                  data-action="click" data-fn="orderMoveDown" :data-pos="$index"
+                                  :disabled="$last || chFb === 'correct'">▼</button>
+                        </div>
+                      </div>
+                    </template>
+                  </div>
+                  <div class="ch-year-actions">
+                    <button class="btn btn--primary ch-year-submit"
+                            data-if="chFb !== 'correct'"
+                            data-action="click" data-fn="checkOrder">Check order</button>
+                  </div>
+                </div>
+
                 <!-- Feedback banner (shared by all types) -->
                 <div class="ch-feedback"
                      :class="{ 'ch-feedback--correct': chFb === 'correct', 'ch-feedback--incorrect': chFb === 'incorrect' }"

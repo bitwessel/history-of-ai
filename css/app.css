@@ -307,6 +307,112 @@ code {
 }
 .ch-feedback__msg { font-size: 13px; line-height: 1.5; }
 
+/* ---- Challenge types — wave 3 ------------------------------------------- */
+
+/* myth-fact */
+.ch-myth-statement {
+  font-style: italic;
+  color: var(--ink);
+  margin-bottom: 18px;
+}
+.ch-myth-buttons {
+  display: flex; gap: 10px; flex-wrap: wrap;
+}
+.ch-myth-btn {
+  flex: 1 1 120px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--mono); font-size: 12px; letter-spacing: .03em;
+  color: var(--ink); background: var(--surface); border: 1px solid var(--line-strong);
+  border-radius: 9px; padding: 11px 14px; cursor: pointer;
+  transition: border-color .15s ease, background .15s ease;
+}
+.ch-myth-btn:not(:disabled):hover { border-color: var(--accent); }
+.ch-myth-btn:disabled { cursor: not-allowed; opacity: .7; }
+.ch-myth-btn__icon { font-size: 14px; opacity: .7; }
+/* Chosen correctly */
+.ch-myth-btn--correct {
+  background: var(--good-soft); border-color: var(--good); color: var(--good-ink);
+}
+.ch-myth-btn--correct .ch-myth-btn__icon { opacity: 1; }
+/* Chosen incorrectly */
+.ch-myth-btn--incorrect {
+  background: var(--bad-soft); border-color: var(--bad); color: var(--bad-ink);
+}
+.ch-myth-btn--incorrect .ch-myth-btn__icon { opacity: 1; }
+/* The un-chosen button when feedback is shown (reveals correct side) */
+.ch-myth-btn--reveal {
+  border-color: var(--good); color: var(--good-ink);
+}
+
+/* predict-word */
+.ch-predict-sentence {
+  font-family: var(--display); font-size: 19px; font-weight: 500; line-height: 1.55;
+  margin-bottom: 10px; color: var(--ink); word-break: break-word;
+}
+.ch-predict-blank {
+  display: inline-block;
+  background: var(--accent-soft); color: transparent; border-radius: 5px;
+  padding: 2px 22px; letter-spacing: .06em; font-family: var(--mono);
+  font-size: 13px; vertical-align: baseline; user-select: none;
+  border: 1px dashed var(--accent);
+}
+.ch-predict-answer {
+  display: inline-block;
+  background: var(--good-soft); color: var(--good-ink);
+  border-radius: 5px; padding: 2px 8px;
+  font-weight: 600; font-style: normal;
+  animation: pop .3s ease;
+}
+@keyframes pop {
+  0%   { transform: scale(.8); opacity: 0; }
+  60%  { transform: scale(1.08); }
+  100% { transform: scale(1);  opacity: 1; }
+}
+.ch-predict-alts {
+  font-family: var(--mono); font-size: 11px; color: var(--ink-muted);
+  margin: 6px 0 14px; display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline;
+}
+.ch-predict-alts__label { color: var(--ink-faint); }
+.ch-predict-alt { color: var(--ink-muted); }
+.ch-predict-alt--top { color: var(--good-ink); font-weight: 600; }
+
+/* order-events */
+.ch-order-list {
+  display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px;
+}
+.ch-order-row {
+  display: flex; align-items: center; gap: 10px;
+  background: var(--paper); border: 1px solid var(--line);
+  border-radius: 9px; padding: 10px 12px;
+  transition: border-color .15s ease, box-shadow .15s ease;
+}
+.ch-order-row:not(.ch-order-row--locked):hover { border-color: var(--accent); }
+.ch-order-row--locked { opacity: .8; }
+.ch-order-handle {
+  font-family: var(--mono); color: var(--ink-faint);
+  letter-spacing: -2px; font-size: 16px; cursor: grab; flex: none;
+}
+.ch-order-year {
+  font-family: var(--mono); font-size: 11px; color: var(--accent-ink);
+  width: 36px; flex: none;
+}
+.ch-order-label {
+  font-size: 13.5px; color: var(--ink); flex: 1 1 auto; min-width: 0;
+}
+.ch-order-btns {
+  display: flex; flex-direction: column; gap: 2px; flex: none;
+}
+.ch-order-btn {
+  width: 24px; height: 20px; padding: 0; border: 1px solid var(--line-strong);
+  background: var(--surface); border-radius: 4px; cursor: pointer;
+  font-size: 9px; color: var(--ink-muted); line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+}
+.ch-order-btn:not(:disabled):hover { border-color: var(--accent); color: var(--accent-ink); }
+.ch-order-btn:disabled { opacity: .35; cursor: not-allowed; }
+
+/* estimate-number: reuses .ch-year-* classes; no extra needed */
+
 /* ---- Openness row (Sources · Edit · Report) -------------------------------- */
 .openness-row {
   display: flex; align-items: center; gap: 8px; flex-wrap: wrap;

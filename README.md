@@ -8,11 +8,14 @@ designed museum exhibit, not a textbook**.
 Curious newcomers and technical readers explore the *same* timeline, each at
 their chosen reading depth.
 
-> **Status:** in progress. Working: the core slide view, reading-depth toggle,
-> prev/next navigation, the timeline scrubber, an animated cosmic background
-> (toggleable), and opt-in **challenges** (multiple-choice + guess-the-year so
-> far) — all rendering live from JSON. Next: source citations, the "edit /
-> report" openness buttons, the era-overview screen, and more timeline nodes.
+> **Status:** the first full version is live. Working: the slide view + timeline
+> scrubber, the multi-select reading-depth toggle, an animated cosmic background
+> (toggleable), opt-in **challenges** in all six formats (multiple-choice,
+> guess-the-year, predict-the-word, order-events, myth-vs-fact, estimate-the-
+> number), per-slide **sources**, **Edit this slide / Report a mistake** links
+> into GitHub, and an **era-overview** map — all rendering live from JSON across
+> 10 slides / 3 eras. Next up is real content and imagery (the prose is accurate
+> but placeholder-grade for now).
 
 ## Open by design
 
