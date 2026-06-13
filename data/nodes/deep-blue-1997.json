@@ -5,11 +5,11 @@
   "title": "Deep Blue Beats Kasparov",
   "who": "IBM",
   "fig": "4.3",
-  "caption": "IBM's Deep Blue chess computer faces Garry Kasparov in their 1997 rematch in New York.",
+  "caption": "One of Deep Blue's two towers — the IBM machine that beat world champion Garry Kasparov in 1997 — on display at the Computer History Museum.",
   "levels": {
     "overview": {
       "text": "In May 1997, IBM's chess computer Deep Blue defeated reigning world champion Garry Kasparov 3.5–2.5 in a six-game match — the first time a computer had beaten a world chess champion under standard tournament conditions. Deep Blue evaluated up to 200 million positions per second using custom VLSI chips and a combination of alpha-beta search, opening book knowledge, and an endgame tablebase. Kasparov famously accused IBM of cheating, a claim the match transcripts do not support.",
-      "image": "",
+      "image": "assets/deep-blue-1997.jpg",
       "tags": ["chess", "search", "IBM Research"]
     },
     "deep": {
@@ -39,6 +39,14 @@
       "publisher": "Artificial Intelligence, Vol. 134",
       "url": "https://doi.org/10.1016/S0004-3702(01)00129-1",
       "license": "© cited"
+    },
+    {
+      "title": "Deep Blue (Computer History Museum)",
+      "author": "James / Jim Gardner",
+      "year": 2007,
+      "publisher": "Wikimedia Commons",
+      "url": "https://commons.wikimedia.org/wiki/File:Deep_Blue.jpg",
+      "license": "CC BY 2.0"
     }
   ]
 }

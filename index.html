@@ -471,7 +471,7 @@
           <div class="source-card__top">
             <div class="source-card__title">{{src.title}}</div>
             <span class="source-card__badge"
-                  :class="{ 'source-card__badge--cc': src.license === 'CC BY-SA', 'source-card__badge--pd': src.license === 'Public domain', 'source-card__badge--cited': src.license !== 'CC BY-SA' && src.license !== 'Public domain' }">
+                  :class="{ 'source-card__badge--cc': src.license && src.license.indexOf('CC') === 0, 'source-card__badge--pd': src.license === 'Public domain', 'source-card__badge--cited': !(src.license && src.license.indexOf('CC') === 0) && src.license !== 'Public domain' }">
               {{src.license}}
             </span>
           </div>

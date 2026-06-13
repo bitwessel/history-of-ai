@@ -5,11 +5,11 @@
   "title": "Can Machines Think?",
   "who": "Alan Turing",
   "fig": "1.4",
-  "caption": "The imitation game: an interrogator tries to tell the machine apart from the human.",
+  "caption": "Alan Turing, photographed in 1951 — a year after he reframed \"can machines think?\" as the imitation game.",
   "levels": {
     "overview": {
       "text": "Alan Turing sidestepped the unanswerable question \"can machines think?\" and replaced it with a game. If a human interrogator, exchanging typed messages, cannot reliably tell a machine from a person, then — Turing argued — we may as well say the machine thinks. The paper also anticipated and rebutted nine objections to the idea of machine intelligence.",
-      "image": "",
+      "image": "assets/turing-test-1950.jpg",
       "tags": ["philosophy of mind", "Mind (journal)", "computability"]
     },
     "deep": {
@@ -40,6 +40,14 @@
       "publisher": "Mind, Vol. LIX",
       "url": "https://doi.org/10.1093/mind/LIX.236.433",
       "license": "© cited"
+    },
+    {
+      "title": "Alan Turing (1951)",
+      "author": "Elliott & Fry",
+      "year": 1951,
+      "publisher": "Wikimedia Commons",
+      "url": "https://commons.wikimedia.org/wiki/File:Alan_Turing_(1951).jpg",
+      "license": "Public domain"
     }
   ]
 }

@@ -5,11 +5,11 @@
   "title": "The XOR Problem",
   "who": "Minsky & Papert",
   "fig": "3.3",
-  "caption": "Minsky and Papert's 1969 book demonstrated that a single-layer perceptron cannot solve the XOR problem.",
+  "caption": "Marvin Minsky, co-author of Perceptrons (1969), photographed at the KI 2006 conference in Bremen.",
   "levels": {
     "overview": {
       "text": "In their 1969 book Perceptrons, Marvin Minsky and Seymour Papert delivered a rigorous mathematical critique of single-layer neural networks. Their central result was damning: a single-layer perceptron cannot learn the XOR function, because XOR is not linearly separable. The book's influence — combined with dwindling results from early AI programs — helped trigger the first 'AI winter,' sharply cutting funding and enthusiasm for neural network research throughout the 1970s.",
-      "image": "",
+      "image": "assets/perceptrons-book-1969.jpg",
       "tags": ["XOR", "linear separability", "AI winter"]
     },
     "deep": {
@@ -34,6 +34,14 @@
       "publisher": "MIT Press",
       "url": "https://mitpress.mit.edu/9780262130431/",
       "license": "© cited"
+    },
+    {
+      "title": "Marvin Minsky at KI 2006",
+      "author": "Steamtalks (Flickr)",
+      "year": 2006,
+      "publisher": "Wikimedia Commons",
+      "url": "https://commons.wikimedia.org/wiki/File:Marvin_Minsky.jpg",
+      "license": "CC BY-SA 2.0"
     }
   ]
 }

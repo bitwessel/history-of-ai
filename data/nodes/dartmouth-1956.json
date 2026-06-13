@@ -5,11 +5,11 @@
   "title": "A Name Is Given",
   "who": "Dartmouth Workshop",
   "fig": "2.1",
-  "caption": "The 1956 Dartmouth Summer Research Project on Artificial Intelligence.",
+  "caption": "John McCarthy, who coined the term \"artificial intelligence\" and co-organised the 1956 Dartmouth workshop, photographed in 2006.",
   "levels": {
     "overview": {
       "text": "In the summer of 1956, a small workshop at Dartmouth College gathered researchers around a bold proposal: that \"every aspect of learning or any other feature of intelligence can in principle be so precisely described that a machine can be made to simulate it.\" The meeting coined the name \"artificial intelligence\" and launched it as a field.",
-      "image": "",
+      "image": "assets/dartmouth-1956.jpg",
       "tags": ["John McCarthy", "Marvin Minsky", "the founding"]
     },
     "deep": {
@@ -36,6 +36,14 @@
       "publisher": "Dartmouth College",
       "url": "http://jmc.stanford.edu/articles/dartmouth.html",
       "license": "© cited"
+    },
+    {
+      "title": "John McCarthy (2006)",
+      "author": "Tom Varco",
+      "year": 2006,
+      "publisher": "Wikimedia Commons",
+      "url": "https://commons.wikimedia.org/wiki/File:John_McCarthy_2006.jpg",
+      "license": "CC BY-SA 3.0"
     }
   ]
 }

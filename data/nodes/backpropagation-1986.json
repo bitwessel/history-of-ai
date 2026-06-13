@@ -5,11 +5,11 @@
   "title": "Backpropagation",
   "who": "Rumelhart, Hinton & Williams",
   "fig": "4.1",
-  "caption": "A multilayer network trained by the backpropagation algorithm: error gradients flow backwards through layers to update every weight.",
+  "caption": "Geoffrey Hinton, co-author of the 1986 paper that popularised backpropagation, photographed in 2024.",
   "levels": {
     "overview": {
       "text": "In 1986, David Rumelhart, Geoffrey Hinton and Ronald Williams published 'Learning Representations by Back-propagating Errors' in Nature, demonstrating that the chain rule of calculus could efficiently compute gradients for every weight in a multilayer network. This made it practical to train networks with hidden layers — precisely the architecture that defeated Minsky and Papert's XOR critique. Though the core idea had appeared in earlier work, this paper's clarity and the Parallel Distributed Processing volumes popularized it across AI research.",
-      "image": "",
+      "image": "assets/backpropagation-1986.jpg",
       "tags": ["chain rule", "gradient descent", "multilayer networks"]
     },
     "deep": {
@@ -40,6 +40,14 @@
       "publisher": "Nature, Vol. 323",
       "url": "https://doi.org/10.1038/323533a0",
       "license": "© cited"
+    },
+    {
+      "title": "Geoffrey E. Hinton (2024)",
+      "author": "Arthur Petron",
+      "year": 2024,
+      "publisher": "Wikimedia Commons",
+      "url": "https://commons.wikimedia.org/wiki/File:Geoffrey_E._Hinton,_2024_Nobel_Prize_Laureate_in_Physics.jpg",
+      "license": "CC BY-SA 4.0"
     }
   ]
 }
