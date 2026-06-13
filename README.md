@@ -96,5 +96,12 @@ science and the math). Both can be on at once.
 
 ## License
 
-Content and code are intended to be openly licensed (see `sources[].license` on
-each node for per-source attribution). A repository license will be added.
+This project is dual-licensed:
+
+- **Code** (HTML / CSS / JS) — [MIT](LICENSE).
+- **Content** (the timeline text in `/data`, and project prose/images) —
+  [Creative Commons Attribution-ShareAlike 4.0](LICENSE-CONTENT) (CC BY-SA 4.0).
+
+Reuse freely with attribution; share adapted content under the same terms.
+Third-party works cited in a slide may carry their own licenses — see the
+`license` field on each entry in that node's `sources`.
