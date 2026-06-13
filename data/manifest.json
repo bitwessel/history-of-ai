@@ -1,0 +1,16 @@
+{
+  "title": "A People's History of AI",
+  "tagline": "An open, community-built tour through the history of artificial intelligence.",
+  "repo": {
+    "owner": "bitwessel",
+    "name": "history-of-ai",
+    "branch": "main",
+    "dataDir": "data/nodes"
+  },
+  "erasFile": "data/eras.json",
+  "nodes": [
+    "mcculloch-pitts-1943",
+    "turing-test-1950",
+    "dartmouth-1956"
+  ]
+}

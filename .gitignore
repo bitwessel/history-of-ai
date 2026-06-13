@@ -1,0 +1,16 @@
+# Local design + library reference (not part of the shipped site)
+_ref/
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Logs / local server noise
+*.log
+npm-debug.log*
+
+# We deliberately ship NO node_modules — this is a build-step-free site.
+node_modules/

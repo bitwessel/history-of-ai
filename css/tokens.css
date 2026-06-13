@@ -1,0 +1,86 @@
+/* =========================================================================
+   A People's History of AI — design tokens
+   Ported from the Claude Design handoff ("AI History System").
+   Thesis: a beautifully designed museum exhibit, not a textbook.
+   ========================================================================= */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html, body { margin: 0; padding: 0; }
+
+/* Font families ---------------------------------------------------------- */
+:root {
+  --display: 'Spectral', Georgia, serif;        /* titles, era names, pull-quotes */
+  --body:    'Source Serif 4', Georgia, serif;  /* the story */
+  --mono:    'JetBrains Mono', ui-monospace, monospace; /* math, code, signage */
+}
+
+/* Light theme (also the default when no theme is set) -------------------- */
+[data-theme="light"],
+[data-theme] {
+  --canvas:#E8E3D8; --paper:#F5F1E8; --paper-2:#EFEAE0;
+  --surface:#FCFAF4; --surface-2:#F7F2E8;
+  --ink:#1A1A17; --ink-muted:#6B6458; --ink-faint:#9C9484;
+  --line:#E2DACA; --line-strong:#D2C8B4;
+  --accent:#B5462E; --accent-ink:#8F3320; --accent-soft:#F0DCD2;
+  --good:#5A7B4B; --good-ink:#3E5A33; --good-soft:#E7ECDB;
+  --bad:#B23A2C; --bad-ink:#8C2A1F; --bad-soft:#F3DDD5;
+  --shadow:0 1px 2px rgba(60,45,20,.05), 0 10px 28px -14px rgba(60,45,20,.22);
+  --shadow-lg:0 2px 4px rgba(60,45,20,.06), 0 28px 60px -24px rgba(60,45,20,.34);
+}
+
+/* Dark theme ------------------------------------------------------------- */
+[data-theme="dark"] {
+  --canvas:#0E0D0A; --paper:#161510; --paper-2:#100F0B;
+  --surface:#1F1D16; --surface-2:#272318;
+  --ink:#ECE6D6; --ink-muted:#A8A08C; --ink-faint:#746D5D;
+  --line:#322E23; --line-strong:#453F2F;
+  --accent:#DA6A4B; --accent-ink:#E89072; --accent-soft:#3A271E;
+  --good:#8FAE6E; --good-ink:#A6C087; --good-soft:#262E1E;
+  --bad:#DB7159; --bad-ink:#E89075; --bad-soft:#37201A;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 14px 34px -16px rgba(0,0,0,.66);
+  --shadow-lg:0 2px 6px rgba(0,0,0,.5), 0 34px 70px -28px rgba(0,0,0,.8);
+}
+
+::selection { background: var(--accent-soft); color: var(--accent-ink); }
+
+/* Page base -------------------------------------------------------------- */
+/* Base colour lives on <html> so the fixed cosmos canvas (a child of <body>
+   with z-index:-1) can paint over it when the animated background is on, and
+   the warm canvas tone still shows when it's off. */
+html { background: var(--canvas); transition: background .35s ease; }
+body {
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--body);
+  line-height: 1.55;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  transition: color .35s ease;
+}
+
+/* Prevent a flash of raw {{ }} templates before spektrum binds.
+   spektrum strips [data-cloak] from every element once it is bound. */
+[data-cloak] { visibility: hidden; }
+
+/* Keyboard focus: a clear, on-brand focus ring everywhere -------------- */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+/* Don't show the ring for mouse users that don't need it. */
+:focus:not(:focus-visible) { outline: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .001ms !important;
+    transition-duration: .001ms !important;
+  }
+}
+
+/* Shared animations ------------------------------------------------------ */
+@keyframes fadeUp { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+@keyframes pop    { 0%{transform:scale(.94)} 60%{transform:scale(1.03)} 100%{transform:scale(1)} }

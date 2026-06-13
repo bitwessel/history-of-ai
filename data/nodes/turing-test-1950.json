@@ -1,0 +1,45 @@
+{
+  "id": "turing-test-1950",
+  "era": "foundations",
+  "year": 1950,
+  "title": "Can Machines Think?",
+  "who": "Alan Turing",
+  "fig": "1.4",
+  "caption": "The imitation game: an interrogator tries to tell the machine apart from the human.",
+  "levels": {
+    "overview": {
+      "text": "Alan Turing sidestepped the unanswerable question \"can machines think?\" and replaced it with a game. If a human interrogator, exchanging typed messages, cannot reliably tell a machine from a person, then — Turing argued — we may as well say the machine thinks. The paper also anticipated and rebutted nine objections to the idea of machine intelligence.",
+      "image": "",
+      "tags": ["philosophy of mind", "Mind (journal)", "computability"]
+    },
+    "deep": {
+      "text": "Turing's \"imitation game\" is a behavioural test: it defines intelligence operationally, by indistinguishable performance, rather than by internal mechanism. This functionalist move still frames debates today — from chatbots to large language models — about whether fluent output is evidence of genuine understanding.",
+      "math": ""
+    }
+  },
+  "challenge": {
+    "type": "multiple-choice",
+    "prompt": "What does the \"imitation game\" actually test?",
+    "options": [
+      "Whether a machine can feel emotion",
+      "Whether a machine's responses are indistinguishable from a human's",
+      "Whether a machine can beat a human at chess",
+      "Whether a machine can solve any mathematical problem"
+    ],
+    "answer": 1,
+    "feedback": {
+      "correct": "Right — Turing reframed \"can machines think?\" as a question about indistinguishable behaviour.",
+      "incorrect": "Not quite — the test is about whether a machine's replies can be told apart from a person's."
+    }
+  },
+  "sources": [
+    {
+      "title": "Computing Machinery and Intelligence",
+      "author": "A. M. Turing",
+      "year": 1950,
+      "publisher": "Mind, Vol. LIX",
+      "url": "https://doi.org/10.1093/mind/LIX.236.433",
+      "license": "© cited"
+    }
+  ]
+}

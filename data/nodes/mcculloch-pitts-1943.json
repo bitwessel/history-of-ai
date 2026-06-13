@@ -1,0 +1,30 @@
+{
+  "id": "mcculloch-pitts-1943",
+  "era": "foundations",
+  "year": 1943,
+  "title": "The Artificial Neuron",
+  "who": "McCulloch & Pitts",
+  "fig": "1.1",
+  "caption": "A McCulloch–Pitts threshold neuron: inputs summed against a fixed threshold θ.",
+  "levels": {
+    "overview": {
+      "text": "In 1943, neurophysiologist Warren McCulloch and logician Walter Pitts proposed that the brain's neurons could be modelled as simple logical switches. Each idealized neuron fired only when its inputs crossed a threshold — and networks of them, they showed, could in principle compute anything a logical statement could express.",
+      "image": "",
+      "tags": ["neurophysiology", "logic gates", "Univ. of Chicago"]
+    },
+    "deep": {
+      "text": "A McCulloch–Pitts unit takes binary inputs, sums them, and outputs 1 only when the sum meets a fixed threshold θ. With excitatory and inhibitory connections you can wire AND, OR and NOT gates — and therefore any Boolean function. What is missing is learning: the weights and threshold are set by hand, not discovered from data.",
+      "math": "y = 1  if  Σᵢ xᵢ ≥ θ,  else 0"
+    }
+  },
+  "sources": [
+    {
+      "title": "A Logical Calculus of the Ideas Immanent in Nervous Activity",
+      "author": "W. McCulloch & W. Pitts",
+      "year": 1943,
+      "publisher": "Bulletin of Mathematical Biophysics",
+      "url": "https://doi.org/10.1007/BF02478259",
+      "license": "© cited"
+    }
+  ]
+}

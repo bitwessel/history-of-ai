@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light" :data-theme="theme">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>A People's History of AI</title>
+  <meta name="description" content="An open, community-built tour through the history of artificial intelligence — from early theories of machine reasoning to the models of today.">
+
+  <!-- Fonts: a serif display + a readable body serif + a mono for math/signage -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/app.css">
+
+  <!-- The only runtime dependency: spektrum, a tiny zero-dep reactive engine.
+       Pinned to an exact version and loaded straight from a CDN — no build step. -->
+  <script type="importmap">
+  { "imports": { "spektrum": "https://unpkg.com/spektrum@1.1.0/spektrum.js" } }
+  </script>
+  <script type="module" src="js/app.js"></script>
+</head>
+
+<body>
+  <!-- Animated cosmic background (behind everything; toggled via the header) -->
+  <canvas id="cosmos" class="cosmos-bg" aria-hidden="true"></canvas>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ============ TOP BAR ============ -->
+  <header class="site-header" data-cloak>
+    <div class="brand">
+      <span class="brand__dot" aria-hidden="true"></span>
+      <span class="brand__name">A People's History of AI</span>
+      <span class="brand__tag">An open exhibit · v0.1</span>
+    </div>
+    <div class="header__actions">
+      <button class="btn btn--chip cosmos-toggle" :class="{ 'is-off': !cosmos }"
+              data-action="click" data-fn="toggleCosmos" :aria-pressed="cosmos"
+              :aria-label="(cosmos ? 'Turn off' : 'Turn on') + ' the animated background'">
+        <span class="star" aria-hidden="true">{{ cosmos ? '✦' : '✧' }}</span>Cosmos
+      </button>
+      <button class="btn btn--chip challenges-toggle" :class="{ 'is-off': !challengesOn }"
+              data-action="click" data-fn="toggleChallenges" :aria-pressed="challengesOn"
+              :aria-label="(challengesOn ? 'Turn off' : 'Turn on') + ' challenges'">
+        <span class="ch-glyph" aria-hidden="true">{{ challengesOn ? '◇' : '◈' }}</span>Challenges
+      </button>
+      <button class="btn btn--chip" data-action="click" data-fn="toggleTheme"
+              :aria-label="'Switch to ' + (theme === 'dark' ? 'light' : 'dark') + ' theme'">
+        <span class="dot" aria-hidden="true"></span>{{ theme === 'dark' ? 'Dark' : 'Light' }}
+      </button>
+    </div>
+  </header>
+
+  <!-- ============ MAIN ============ -->
+  <main class="exhibit" id="main" data-cloak>
+
+    <!-- loading -->
+    <div class="app-status" data-if="view === 'loading'">Loading the timeline…</div>
+
+    <!-- error -->
+    <div class="app-status app-status--error" data-if="view === 'error'">
+      <div>
+        <p>Couldn't load the timeline.<br><span class="err">{{ errorMsg }}</span></p>
+        <p>If you opened <code>index.html</code> directly, start a local server first —
+           browsers block <code>fetch()</code> on <code>file://</code>. See the README.</p>
+      </div>
+    </div>
+
+    <!-- ready: the slide -->
+    <div data-if="view === 'ready'">
+      <div class="section-eyebrow">{{ 'Slide ' + (activeIdx + 1) + ' of ' + nodeCount }}</div>
+
+      <article class="slide" aria-label="Timeline slide">
+        <div class="slide__body">
+
+          <!-- VISUAL -->
+          <div class="slide__visual">
+            <div class="visual__row">
+              <span class="era-pill">{{ cur.eraName }}</span>
+              <span class="fig-tag">{{ cur.fig }}</span>
+            </div>
+            <div class="visual__center">
+              <div class="ph">image placeholder</div>
+              <div class="visual__caption">{{ cur.caption }}</div>
+            </div>
+            <div class="visual__row visual__row--bottom">
+              <span class="visual__note">drop archival photo / diagram</span>
+              <span class="visual__note">1600 × 1200</span>
+            </div>
+          </div>
+
+          <!-- TEXT -->
+          <div class="slide__text">
+            <div class="slide__meta">
+              <div class="slide__year">{{ cur.year }}</div>
+              <div class="slide__who">{{ cur.who }}</div>
+            </div>
+            <h2 class="slide__title">{{ cur.title }}</h2>
+
+            <!-- DEPTH CONTROL (multi-select toggle chips) -->
+            <div class="depth" role="group" aria-label="Reading depth">
+              <span class="depth__label">Depth</span>
+              <button class="depth-chip" :class="{ active: depthOv }" :aria-pressed="depthOv"
+                      data-action="click" data-fn="toggleOv">
+                <span class="check" aria-hidden="true">✓</span>Overview
+              </button>
+              <button class="depth-chip" :class="{ active: depthIn }" :aria-pressed="depthIn"
+                      data-action="click" data-fn="toggleIn">
+                <span class="check" aria-hidden="true">✓</span>In-depth
+              </button>
+            </div>
+
+            <!-- both depths off -->
+            <div class="depth-empty" data-if="!depthOv && !depthIn">
+              Pick a reading depth above to see the story.
+            </div>
+
+            <!-- OVERVIEW -->
+            <div class="level level--overview" data-if="depthOv">
+              <div class="level__text">{{ cur.overview }}</div>
+              <div class="tags">
+                <template data-each="cur.tags" data-as="tag">
+                  <span class="tag">{{ tag }}</span>
+                </template>
+              </div>
+            </div>
+
+            <!-- IN-DEPTH (nests under overview) -->
+            <div class="level level--deep" data-if="depthIn">
+              <div class="level__label">In-depth · the science</div>
+              <div class="level__text">{{ cur.deep }}</div>
+              <div class="math" data-if="cur.hasMath">{{ cur.math }}</div>
+            </div>
+
+            <!-- CHALLENGE (opt-in; only when slide has one and global toggle is on) -->
+            <div class="challenge-wrap" data-if="cur.hasChallenge && challengesOn">
+
+              <!-- Collapsed: "Try a challenge?" prompt -->
+              <button class="challenge-prompt" data-if="!chOpen"
+                      data-action="click" data-fn="toggleChallenge"
+                      :aria-expanded="chOpen">
+                <span class="challenge-prompt__icon" aria-hidden="true">◇</span>
+                <span class="challenge-prompt__text">
+                  <span class="challenge-prompt__title">Try a challenge?</span>
+                  <span class="challenge-prompt__sub">~30 seconds · skip anytime</span>
+                </span>
+                <span class="challenge-prompt__plus" aria-hidden="true">+</span>
+              </button>
+
+              <!-- Expanded: challenge card -->
+              <div class="challenge-card" data-if="chOpen">
+                <div class="challenge-card__header">
+                  <span class="challenge-card__type">Challenge · {{ cur.challenge && cur.challenge.type === 'multiple-choice' ? 'multiple choice' : 'guess the year' }}</span>
+                  <button class="challenge-card__close" data-action="click" data-fn="toggleChallenge"
+                          aria-label="Collapse challenge">collapse ✕</button>
+                </div>
+
+                <!-- ── TYPE: multiple-choice ── -->
+                <div data-if="cur.challenge.type === 'multiple-choice'">
+                  <p class="challenge-card__prompt">{{ cur.challenge.prompt }}</p>
+                  <div class="ch-mc-options">
+                    <template data-each="mcOptions" data-as="opt">
+                      <button class="ch-mc-option"
+                              :class="{ 'ch-mc-option--correct': opt.optState === 'correct', 'ch-mc-option--incorrect': opt.optState === 'incorrect' }"
+                              :aria-pressed="chPick === opt.idx"
+                              data-action="click" data-fn="pickMC" :data-idx="opt.idx"
+                              :disabled="chFb !== 'neutral'">
+                        <span class="ch-mc-option__mark" aria-hidden="true">{{ opt.optState === 'correct' ? '✓' : opt.optState === 'incorrect' ? '✕' : String.fromCharCode(65 + opt.idx) }}</span>
+                        {{ opt.label }}
+                      </button>
+                    </template>
+                  </div>
+                </div>
+
+                <!-- ── TYPE: guess-the-year ── -->
+                <div data-if="cur.challenge.type === 'guess-the-year'">
+                  <p class="challenge-card__prompt">{{ cur.challenge.prompt }}</p>
+                  <div class="ch-year-display" aria-live="polite" aria-label="Selected year">
+                    {{ chYear !== null ? chYear : (cur.challenge && cur.challenge.range ? cur.challenge.range.min + Math.round((cur.challenge.range.max - cur.challenge.range.min) / 2) : '') }}
+                  </div>
+                  <div class="ch-year-track" aria-hidden="true">
+                    <div class="ch-year-track__line"></div>
+                    <input type="range" class="ch-year-slider"
+                           :min="cur.challenge && cur.challenge.range && cur.challenge.range.min"
+                           :max="cur.challenge && cur.challenge.range && cur.challenge.range.max"
+                           step="1"
+                           :value="chYear !== null ? chYear : (cur.challenge && cur.challenge.range ? cur.challenge.range.min + Math.round((cur.challenge.range.max - cur.challenge.range.min) / 2) : 0)"
+                           data-action="input" data-fn="yearSliderChange"
+                           :aria-label="'Guess a year between ' + (cur.challenge && cur.challenge.range ? cur.challenge.range.min : '') + ' and ' + (cur.challenge && cur.challenge.range ? cur.challenge.range.max : '')">
+                  </div>
+                  <div class="ch-year-labels">
+                    <span>{{ cur.challenge && cur.challenge.range ? cur.challenge.range.min : '' }}</span>
+                    <span>{{ cur.challenge && cur.challenge.range ? cur.challenge.range.max : '' }}</span>
+                  </div>
+                  <div class="ch-year-actions">
+                    <button class="btn btn--primary ch-year-submit"
+                            data-if="chFb === 'neutral'"
+                            data-action="click" data-fn="submitYear">Check my guess</button>
+                    <button class="btn btn--secondary ch-year-retry"
+                            data-if="chFb === 'incorrect'"
+                            data-action="click" data-fn="resetYear">↺ Try again</button>
+                  </div>
+                </div>
+
+                <!-- Feedback banner (shared by all types) -->
+                <div class="ch-feedback"
+                     :class="{ 'ch-feedback--correct': chFb === 'correct', 'ch-feedback--incorrect': chFb === 'incorrect' }"
+                     data-if="chFb !== 'neutral'"
+                     aria-live="polite">
+                  <span class="ch-feedback__icon" aria-hidden="true">{{ chFb === 'correct' ? '✓' : '✕' }}</span>
+                  <span class="ch-feedback__msg">{{ chFb === 'correct' ? cur.challenge.feedback.correct : cur.challenge.feedback.incorrect }}</span>
+                </div>
+
+              </div><!-- /.challenge-card -->
+            </div><!-- /.challenge-wrap -->
+
+            <div class="slide__spacer"></div>
+          </div>
+        </div>
+
+        <!-- TIMELINE SCRUBBER -->
+        <div class="scrubber">
+          <div class="scrubber__row">
+            <button class="nav-btn" data-action="click.prevent" data-fn="prev"
+                    :disabled="activeIdx === 0" aria-label="Previous slide">‹</button>
+
+            <div class="track">
+              <div class="track__line" aria-hidden="true"></div>
+              <div class="track__progress" aria-hidden="true"
+                   :style="'--progress:' + (nodeCount > 1 ? (activeIdx / (nodeCount - 1)) * 100 : 0) + '%'"></div>
+              <template data-each="ticks" data-as="t">
+                <button class="tick" :class="{ 'tick--active': t.active }"
+                        :style="'--pos:' + t.left"
+                        data-action="click.prevent" data-fn="goto" :data-idx="t.idx"
+                        :title="t.title" :aria-label="t.title" :aria-current="t.active">
+                  <span class="tick__dot" aria-hidden="true"></span>
+                  <span class="tick__year">{{ t.year }}</span>
+                  <span class="tick__challenge" data-if="t.showChallenge" aria-hidden="true"></span>
+                </button>
+              </template>
+            </div>
+
+            <button class="nav-btn" data-action="click.prevent" data-fn="next"
+                    :disabled="activeIdx >= nodeCount - 1" aria-label="Next slide">›</button>
+          </div>
+
+          <div class="scrubber__legend">
+            <span>{{ firstYear }} · earliest</span>
+            <span class="has-ch"><span class="dot" aria-hidden="true"></span> has a challenge</span>
+            <span>{{ lastYear }} · latest</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </main>
+</body>
+</html>

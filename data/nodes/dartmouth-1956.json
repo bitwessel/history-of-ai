@@ -1,0 +1,41 @@
+{
+  "id": "dartmouth-1956",
+  "era": "foundations",
+  "year": 1956,
+  "title": "A Name Is Given",
+  "who": "Dartmouth Workshop",
+  "fig": "2.1",
+  "caption": "The 1956 Dartmouth Summer Research Project on Artificial Intelligence.",
+  "levels": {
+    "overview": {
+      "text": "In the summer of 1956, a small workshop at Dartmouth College gathered researchers around a bold proposal: that \"every aspect of learning or any other feature of intelligence can in principle be so precisely described that a machine can be made to simulate it.\" The meeting coined the name \"artificial intelligence\" and launched it as a field.",
+      "image": "",
+      "tags": ["John McCarthy", "Marvin Minsky", "the founding"]
+    },
+    "deep": {
+      "text": "The Dartmouth proposal set an agenda more than it delivered results: automata theory, neural nets, abstraction, creativity and language all appear on its wish-list. Its optimism — that major progress might come from ten people in a single summer — became a lasting cautionary tale about how easily the difficulty of intelligence is underestimated.",
+      "math": ""
+    }
+  },
+  "challenge": {
+    "type": "guess-the-year",
+    "prompt": "When was the term \"artificial intelligence\" coined?",
+    "answer": 1956,
+    "range": { "min": 1940, "max": 1985 },
+    "tolerance": 3,
+    "feedback": {
+      "correct": "Spot on — the 1956 Dartmouth workshop gave the field its name.",
+      "incorrect": "It was 1956, at the Dartmouth Summer Research Project."
+    }
+  },
+  "sources": [
+    {
+      "title": "A Proposal for the Dartmouth Summer Research Project on Artificial Intelligence",
+      "author": "J. McCarthy, M. Minsky, N. Rochester & C. Shannon",
+      "year": 1955,
+      "publisher": "Dartmouth College",
+      "url": "http://jmc.stanford.edu/articles/dartmouth.html",
+      "license": "© cited"
+    }
+  ]
+}
