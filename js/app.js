@@ -188,6 +188,67 @@ function goTo(idx) {
   resetChallenge();
 }
 
+// ---- Era-overview builder ------------------------------------------------
+
+/** Build the eraGroups data for the era-overview screen.
+ *  Returns an array of { id, name, range, blurb, cards[] } in chronological order.
+ *  Each card: { idx, year, title, eraName, isCurrent, showChallenge }.
+ *  Eras with zero nodes are omitted. */
+function buildEraGroups(state) {
+  const nodes = state.nodes;
+  const eras = state.eras;
+  const activeIdx = state.activeIdx;
+  const challengesOn = !!state.challengesOn;
+
+  if (!Array.isArray(nodes) || nodes.length === 0) return [];
+  if (!Array.isArray(eras) || eras.length === 0) return [];
+
+  // Group node indices by era id (preserving chronological order of nodes).
+  const groups = new Map();
+  nodes.forEach((node, idx) => {
+    const eraId = node.era;
+    if (!groups.has(eraId)) groups.set(eraId, []);
+    groups.get(eraId).push(idx);
+  });
+
+  // Build result in the order eras appear in eras.json, skipping empty ones.
+  const result = [];
+  for (const era of eras) {
+    const idxList = groups.get(era.id);
+    if (!idxList || idxList.length === 0) continue;
+
+    // Compute year range from the nodes in this era.
+    const years = idxList.map(i => nodes[i].year);
+    const minYear = Math.min(...years);
+    const maxYear = Math.max(...years);
+    const range = minYear === maxYear ? String(minYear) : `${minYear} – ${maxYear}`;
+
+    const cards = idxList.map(idx => {
+      const node = nodes[idx];
+      const showChallenge = !!node.challenge &&
+        IMPLEMENTED_CHALLENGE_TYPES.has(node.challenge.type) &&
+        challengesOn;
+      return {
+        idx,
+        year: node.year,
+        title: node.title,
+        eraName: era.name,
+        isCurrent: idx === clampIdx(activeIdx, nodes.length),
+        showChallenge
+      };
+    });
+
+    result.push({
+      id: era.id,
+      name: era.name,
+      range,
+      blurb: era.blurb || '',
+      cards
+    });
+  }
+  return result;
+}
+
 // ---- Boot ----------------------------------------------------------------
 
 function boot() {
@@ -197,6 +258,7 @@ function boot() {
   setValue('errorMsg', '');
   setValue('theme', initialTheme);
   setValue('cosmos', initialCosmos);
+  setValue('screen', 'slide'); // 'slide' | 'eras'
   setValue('activeIdx', 0);
   setValue('nodeCount', 0);
   setValue('firstYear', '');
@@ -224,6 +286,8 @@ function boot() {
   computed('mcOptions', ['cur', 'chPick', 'chFb'], buildMcOptions);
   // Computed GitHub links (edit / report) keyed on current slide + manifest.
   computed('links', ['cur', 'manifest'], buildLinks);
+  // Era groups for the overview screen.
+  computed('eraGroups', ['activeIdx', 'nodes', 'eras', 'challengesOn'], buildEraGroups);
 
   // Handlers (must be registered before bindDOM so data-fn lookups resolve).
   defineFn('toggleTheme', () => {
@@ -242,6 +306,17 @@ function boot() {
     const next = !appState.challengesOn;
     setValue('challengesOn', next);
     writePref('hai.challenges', next ? '1' : '0');
+  });
+  // Toggle between the slide view and the era-overview map.
+  defineFn('toggleScreen', () => {
+    setValue('screen', appState.screen === 'eras' ? 'slide' : 'eras');
+  });
+  // Jump to a node by its global index (read from el.dataset.idx) and
+  // return to the slide view. Reuses goTo() which sets activeIdx + resets
+  // the challenge UI.
+  defineFn('jumpTo', (el) => {
+    goTo(Number(el.dataset.idx));
+    setValue('screen', 'slide');
   });
   defineFn('prev', () => goTo((Number(appState.activeIdx) || 0) - 1));
   defineFn('next', () => goTo((Number(appState.activeIdx) || 0) + 1));
@@ -328,8 +403,8 @@ function boot() {
     if (t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return;
     if (e.key === 'Escape') {
       if (appState.sourcesOpen) { setValue('sourcesOpen', false); }
-    } else if (e.key === 'ArrowLeft') { goTo((Number(appState.activeIdx) || 0) - 1); }
-    else if (e.key === 'ArrowRight') { goTo((Number(appState.activeIdx) || 0) + 1); }
+    } else if (appState.screen === 'slide' && e.key === 'ArrowLeft') { goTo((Number(appState.activeIdx) || 0) - 1); }
+    else if (appState.screen === 'slide' && e.key === 'ArrowRight') { goTo((Number(appState.activeIdx) || 0) + 1); }
   });
 
   loadTimeline();

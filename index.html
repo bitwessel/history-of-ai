@@ -50,6 +50,12 @@
               :aria-label="'Switch to ' + (theme === 'dark' ? 'light' : 'dark') + ' theme'">
         <span class="dot" aria-hidden="true"></span>{{ theme === 'dark' ? 'Dark' : 'Light' }}
       </button>
+      <button class="btn btn--chip screen-toggle" data-action="click" data-fn="toggleScreen"
+              :class="{ 'is-active': screen === 'eras' }"
+              :aria-pressed="screen === 'eras'"
+              :aria-label="screen === 'eras' ? 'Return to slide view' : 'Open era overview map'">
+        <span class="screen-toggle__icon" aria-hidden="true">{{ screen === 'eras' ? '◉' : '◎' }}</span>{{ screen === 'eras' ? 'Slide' : 'Overview' }}
+      </button>
     </div>
   </header>
 
@@ -69,7 +75,7 @@
     </div>
 
     <!-- ready: the slide -->
-    <div data-if="view === 'ready'">
+    <div data-if="view === 'ready' && screen === 'slide'">
       <div class="section-eyebrow">{{ 'Slide ' + (activeIdx + 1) + ' of ' + nodeCount }}</div>
 
       <article class="slide" aria-label="Timeline slide">
@@ -273,6 +279,54 @@
           </div>
         </div>
       </article>
+    </div>
+
+    <!-- ready: era-overview map -->
+    <div class="era-overview" data-if="view === 'ready' && screen === 'eras'"
+         role="region" aria-label="Era overview — jump to any slide">
+
+      <div class="era-overview__header">
+        <h2 class="era-overview__heading">The whole timeline</h2>
+        <p class="era-overview__sub">A map of every era — click any card to jump straight to that slide.</p>
+      </div>
+
+      <template data-each="eraGroups" data-as="eg">
+        <section class="era-section">
+          <div class="era-section__meta">
+            <h3 class="era-section__name">{{ eg.name }}</h3>
+            <span class="era-section__range">{{ eg.range }}</span>
+          </div>
+          <p class="era-section__blurb">{{ eg.blurb }}</p>
+
+          <div class="era-card-grid">
+            <template data-each="eg.cards" data-as="c">
+              <button class="era-card"
+                      :class="{ 'era-card--current': c.isCurrent }"
+                      data-action="click" data-fn="jumpTo"
+                      :data-idx="c.idx"
+                      :aria-label="c.year + ' · ' + c.title + (c.isCurrent ? ' (current slide)' : '')">
+                <!-- Striped thumbnail area -->
+                <div class="era-card__thumb">
+                  <span class="era-card__fig" aria-hidden="true">fig.</span>
+                  <span class="era-card__ch-badge" data-if="c.showChallenge" aria-hidden="true">
+                    <span class="era-card__ch-dot"></span>challenge
+                  </span>
+                </div>
+                <!-- Year + YOU ARE HERE badge -->
+                <div class="era-card__year-row">
+                  <span class="era-card__year">{{ c.year }}</span>
+                  <span class="era-card__here" data-if="c.isCurrent" aria-hidden="true">YOU ARE HERE</span>
+                </div>
+                <!-- Kicker label (era name) -->
+                <div class="era-card__kicker">{{ c.eraName }}</div>
+                <!-- Title -->
+                <div class="era-card__title">{{ c.title }}</div>
+              </button>
+            </template>
+          </div>
+        </section>
+      </template>
+
     </div>
   </main>
 

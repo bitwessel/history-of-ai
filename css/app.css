@@ -416,6 +416,146 @@ code {
 .app-status--error { color: var(--bad-ink); }
 
 /* =========================================================================
+   Era overview — "jump into any era / any point" map
+   ========================================================================= */
+
+/* Header chip: Overview / Slide toggle */
+.screen-toggle .screen-toggle__icon { font-size: 13px; color: var(--accent); }
+.screen-toggle.is-active { color: var(--accent-ink); background: var(--accent-soft); border-color: var(--accent); }
+.screen-toggle.is-active .screen-toggle__icon { color: var(--accent-ink); }
+
+/* Container */
+.era-overview {
+  animation: fadeUp .22s ease;
+}
+
+/* Section-level header above all eras */
+.era-overview__header {
+  margin: 0 0 32px;
+}
+.era-overview__heading {
+  font-family: var(--display); font-weight: 600; font-size: 28px;
+  letter-spacing: -.01em; margin: 0 0 6px; color: var(--ink);
+}
+.era-overview__sub {
+  font-family: var(--mono); font-size: 11.5px; color: var(--ink-muted);
+  margin: 0; max-width: 56ch;
+}
+
+/* Individual era section */
+.era-section {
+  margin-bottom: 44px;
+}
+.era-section__meta {
+  display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+.era-section__name {
+  font-family: var(--display); font-weight: 600; font-size: 22px;
+  letter-spacing: -.01em; margin: 0; color: var(--ink);
+}
+.era-section__range {
+  font-family: var(--mono); font-size: 11px; letter-spacing: .06em;
+  color: var(--ink-faint); white-space: nowrap;
+}
+.era-section__blurb {
+  font-size: 14px; line-height: 1.58; color: var(--ink-muted);
+  margin: 0 0 18px; max-width: 74ch;
+}
+
+/* Card grid */
+.era-card-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 14px;
+}
+
+/* Individual node card */
+.era-card {
+  display: flex; flex-direction: column; align-items: stretch;
+  text-align: left; cursor: pointer;
+  background: var(--paper); border: 1px solid var(--line-strong);
+  border-radius: 12px; padding: 0;
+  box-shadow: var(--shadow);
+  transition: border-color .15s ease, box-shadow .15s ease;
+  overflow: hidden;
+}
+.era-card:hover {
+  border-color: var(--accent);
+  box-shadow: var(--shadow-lg);
+}
+.era-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Striped thumbnail — matches .slide__visual */
+.era-card__thumb {
+  height: 70px;
+  background: repeating-linear-gradient(
+    135deg,
+    var(--surface-2), var(--surface-2) 8px,
+    var(--paper-2) 8px, var(--paper-2) 16px
+  );
+  border-bottom: 1px solid var(--line);
+  display: flex; align-items: flex-start; justify-content: space-between;
+  padding: 9px 10px;
+  flex: none;
+}
+.era-card__fig {
+  font-family: var(--mono); font-size: 10px; color: var(--ink-faint);
+}
+
+/* Challenge badge on the thumb */
+.era-card__ch-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-family: var(--mono); font-size: 9px; color: var(--accent-ink);
+  background: var(--paper); border-radius: 10px; padding: 2px 7px;
+}
+.era-card__ch-dot {
+  width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex: none;
+}
+
+/* Card body text area */
+.era-card__year-row {
+  display: flex; align-items: baseline; gap: 8px;
+  padding: 10px 12px 2px;
+  flex-wrap: wrap;
+}
+.era-card__year {
+  font-family: var(--display); font-size: 22px; font-weight: 600;
+  color: var(--accent-ink); letter-spacing: -.01em; line-height: 1;
+}
+
+/* "YOU ARE HERE" badge */
+.era-card__here {
+  font-family: var(--mono); font-size: 9px; letter-spacing: .06em;
+  color: var(--surface); background: var(--accent);
+  border-radius: 4px; padding: 2px 6px; white-space: nowrap;
+}
+
+/* Era kicker */
+.era-card__kicker {
+  font-family: var(--mono); font-size: 9.5px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--ink-faint);
+  padding: 0 12px 4px;
+}
+
+/* Card title */
+.era-card__title {
+  font-family: var(--display); font-size: 16px; font-weight: 600;
+  line-height: 1.2; color: var(--ink);
+  padding: 0 12px 12px;
+}
+
+/* Current-node ring + highlight */
+.era-card--current {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent), var(--shadow-lg);
+}
+.era-card--current .era-card__year { color: var(--accent-ink); }
+
+/* =========================================================================
    Responsive — the same system, stacked, on a phone.
    ========================================================================= */
 @media (max-width: 720px) {
@@ -430,4 +570,9 @@ code {
   .scrubber__row { gap: 10px; }
   .tick__year { display: none; }   /* labels crowd on small screens; keep the dots */
   .scrubber__legend { display: none; }
+
+  /* Era overview: single column on mobile */
+  .era-card-grid { grid-template-columns: 1fr; }
+  .era-overview__heading { font-size: 22px; }
+  .era-section__name { font-size: 18px; }
 }
